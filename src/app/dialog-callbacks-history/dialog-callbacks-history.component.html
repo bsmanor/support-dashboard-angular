@@ -1,0 +1,7 @@
+<div class="callbackListItem" *ngFor="let callback of callbacks">
+  <a href={{callback.zendeskLink}} target="_blank" mat-raised-button color="warn" style="width:50px;"># {{callback.ticketId}}</a>
+  <span>{{callback.date}}</span>
+  <span *ngIf="callback.agent">{{callback.agent.name}}</span>
+  <span>{{callback.networkId}}</span>
+
+</div>

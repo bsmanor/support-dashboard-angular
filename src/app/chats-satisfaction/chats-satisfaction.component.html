@@ -1,0 +1,18 @@
+<div class="textCenter chatStatsCmponent">
+    <mat-icon class="iconHeader">favorite</mat-icon>
+    <h1>Satisfaction</h1>
+    <div class="flexRow spaceBetween textCenter">
+        <div class="flexColumn">
+            <mat-icon>thumb_up</mat-icon>
+            <hr>
+            <div>{{ratedGood}}</div>
+            <mat-spinner *ngIf="ratedGood == null" class="textCenter" [diameter]="30"></mat-spinner>
+        </div>
+        <div class="flexColumn">
+            <mat-icon>thumb_down</mat-icon>
+            <hr>
+            <div>{{ratedBad}}</div>
+            <mat-spinner *ngIf="ratedBad == null" class="textCenter" [diameter]="30"></mat-spinner>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+#homeMainContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  /* height:80vh; */
+}
+
+#homeBodyContainer {
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,22 @@
+Structure:
+
+what I need?
+
+Login check:
+ - if user logged in -> redirect to the home component
+ - if not logged in -> redirect to login component
+
+Components:
+
+login.component
+sign-up.component
+nav-bar.component
+home.component
+settings.component
+ 
+ - app.component:
+
+
+Services:
+
+getAgents

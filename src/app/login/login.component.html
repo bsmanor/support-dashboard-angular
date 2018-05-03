@@ -1,0 +1,17 @@
+<div class="flexColumn center" style="height:90vh">
+
+  <div *ngIf="!afAuth.authState" class="flexColumn center" style="height:90vh;">
+    <h2>Authenticating</h2>
+    <div id="wave">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+
+  <div class="flexColumn center" *ngIf="loginStatus === 1">
+    <mat-icon style="font-size:3em;transform:rotate(40deg);right:7px;margin-bottom:25px;">bug_report</mat-icon>
+    <h2>{{errorMessage}}</h2>
+    <button mat-raised-button (click)="login()" color="primary" style="margin-top:20px;">Try Again</button>
+  </div>
+</div>

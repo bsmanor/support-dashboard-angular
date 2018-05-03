@@ -1,0 +1,22 @@
+.callbacksList {
+  border-radius: 15px;
+  /* transition: 100ms;
+  transition-timing-function: ease-in; */
+}
+
+.callbacksList:hover {
+  background-color: #455a64;
+  color: #cfd8dc;
+}
+
+.callbacksList:hover .menuIcon {
+  visibility: visible;
+}
+
+.menuIcon {
+  visibility: hidden;
+}
+
+.menuIcon:hover {
+  visibility: hidden;
+}

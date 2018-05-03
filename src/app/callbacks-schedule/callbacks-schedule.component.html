@@ -1,0 +1,62 @@
+<mat-card class="scheduleCard mainComponentsBorder">
+  <div class="scheduleCardHead">
+
+    <div class="textCenter flexRow spaceBetween">
+
+      <div id="placegolder" style="flex:1;"></div>
+      <mat-icon class="iconHeader" style="flex:1;left:2px;">call</mat-icon>
+      <div style="flex:1;">
+        <button mat-icon-button [matMenuTriggerFor]="menu" style="float:right;">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+  
+          <button mat-menu-item (click)="openAddCallbackDialog()">
+            <mat-icon>add</mat-icon>
+            <span>New</span>
+          </button>
+  
+          <button mat-menu-item (click)="openCallabckHistoryDialog()">
+            <mat-icon>cloud_download</mat-icon>
+            <span>History</span>
+          </button>
+  
+        </mat-menu>
+      </div>
+
+    </div>
+
+    <!-- <h2 class="schedulesHeader headerText">Callbacks</h2>
+    <mat-divider></mat-divider> -->
+
+  </div>
+
+  <mat-list *ngIf="allCallbacks">
+    <mat-list-item class="callbacksList" *ngFor="let callback of allCallbacks" >
+      <img *ngIf="callback.agent" matListAvatar src={{callback.agent.picture}} alt="...">
+      <h3 matLine>{{callback.networkId}}</h3>
+      <h3 matLine>{{callback.date}} {{callback.time}}</h3>
+      <a href={{callback.zendeskLink}} target="_blank" mat-raised-button color="accent"># {{callback.ticketId}}</a>
+      <div class="menuIcon" style="flex:1;">
+          <button mat-icon-button [matMenuTriggerFor]="menu" style="float:right;">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+    
+            <button mat-menu-item (click)="updateCallback(callback.id, 'Done')">
+              <mat-icon>done</mat-icon>
+              <span>Mark as done</span>
+            </button>
+    
+            <button mat-menu-item (click)="openCallabckHistoryDialog()">
+              <mat-icon color="warn">delete</mat-icon>
+              <span>Delete</span>
+            </button>
+    
+          </mat-menu>
+        </div>
+    </mat-list-item>
+  </mat-list>
+
+
+</mat-card>

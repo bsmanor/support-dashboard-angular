@@ -1,0 +1,38 @@
+<div class="scheduleCard">
+  <div class="textCenter flexRow spaceBetween">
+    <!-- spacer -->
+    <div id="placegolder" style="flex:1;"></div>
+    <!-- icon -->
+    <mat-icon class="iconHeader" style="flex:1;left:2px;">wb_incandescent</mat-icon>
+    <!-- menu icon -->
+    <div style="flex:1;">
+      <button mat-icon-button [matMenuTriggerFor]="menu" style="float:right;">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+          <mat-icon>cloud</mat-icon>
+          <span>History</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+  <!-- title -->
+  <h2 class="schedulesHeader headerText">Messages</h2>
+  <mat-divider></mat-divider>
+
+  <mat-list>
+    <mat-list-item>
+      <img matListAvatar src="../../assets/images/logo3.jpg" alt="...">
+      <h3 matLine>Manor</h3>
+      <p matLine>
+        <span>New Dashboard</span>
+        <span class="demo-2"> {{content | limitText:30}} </span>
+      </p>
+    </mat-list-item>
+  </mat-list>
+
+
+
+</div>
+

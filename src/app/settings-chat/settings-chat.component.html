@@ -1,0 +1,72 @@
+<mat-card>
+  <div class="flexColumn">
+
+    <div class="flexRow margin-bottom">
+      <p>{{weekDays[0].momentObj.format('MMM')}} {{weekDays[0].momentObj.format('Do')}} - {{weekDays[6].momentObj.format('MMM')}} {{weekDays[6].momentObj.format('Do')}}</p>
+      <button mat-button color="accent" (click)="subWeek()"><mat-icon>keyboard_arrow_left</mat-icon></button>
+      <button mat-button color="accent" (click)="addWeek()"><mat-icon>keyboard_arrow_right</mat-icon></button>
+    </div>
+
+    <div class="margin-bottom">
+      <mat-checkbox 
+        *ngFor="let day of weekDays" 
+        style="margin-right:15px;"
+        (click)="updateDay(day)" 
+      >
+        {{day.momentObj.format('dd')}}
+      </mat-checkbox>
+    </div>
+
+    <div class="margin-bottom">
+      <mat-form-field style="width:100px;margin-right:15px;">
+        <input type="time" #chatStart matInput placeholder="Start"/>
+        <mat-icon matSuffix>schedule</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field style="width:100px;">
+        <input type="time" #chatEnd matInput placeholder="End"/>
+        <mat-icon matSuffix>schedule</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field class="margin-bottom">
+      <input #numOfAgents matInput placeholder="How many agents are participating?" style="width:250px;">
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="tableInit(chatStart.value, chatEnd.value, numOfAgents.value)">Build</button>
+
+  </div>
+
+</mat-card>
+
+<div>
+  
+  <mat-table #table [dataSource]="dataSource" class="flexRow spaceBetween mat-table">
+    <!-- agent Column -->
+    <ng-container matColumnDef="agent">
+      <mat-header-cell *matHeaderCellDef> Agent </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-select><mat-option #selectedAgent (click)="element.agent = selectedAgent.value" *ngFor="let agent of agents | async" [(value)]="agent.id" >{{agent.name}}</mat-option></mat-select>
+      </mat-cell>
+      </ng-container>
+  
+      <!-- start Column -->
+      <ng-container matColumnDef="start" class="textCenter">
+        <mat-header-cell *matHeaderCellDef> Start </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.start}} </mat-cell>
+      </ng-container>
+  
+      <!-- end Column -->
+      <ng-container matColumnDef="end" class="textCenter">
+        <mat-header-cell *matHeaderCellDef> End </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.end}} </mat-cell>
+      </ng-container>
+  
+  
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <button mat-raised-button color="primary" (click)="saveTable(table.dataSource)" style="margin-top:20px;">Save & Upload</button>    
+    
+</div>

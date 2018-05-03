@@ -1,0 +1,12 @@
+.dateArrows {
+  border: 1px solid black;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 1px;
+}
+
+.dateArrows:hover{
+  border: 2px green solid;
+  color: green;
+  padding: 0px;
+}

@@ -1,0 +1,36 @@
+<div id="container">
+  <form id="callbackFormContainer">
+
+    <mat-form-field>
+      <input #username matInput placeholder="User name">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input #networkId matInput placeholder="Network ID">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input #ticketId matInput placeholder="Ticket ID">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input #date type="date" matInput placeholder="Date">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input #time type="time" matInput placeholder="Hour">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select #assignee placeholder="Assignee">
+        <mat-option *ngFor="let agent of agents" [value]="agent.id">
+          {{ agent.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </form>
+
+  <button mat-raised-button color="primary" (click)="saveCallback(username.value,networkId.value,date.value,time.value,assignee.value, ticketId.value)">Save</button>
+</div>
+

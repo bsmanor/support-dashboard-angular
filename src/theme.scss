@@ -1,0 +1,159 @@
+// Angular Material Themeing
+@import '~@angular/material/theming';
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue.
+$candy-app-primary: mat-palette($mat-blue-grey, 900);
+$candy-app-accent:  mat-palette($mat-orange, 400);
+$candy-app-warn:    mat-palette($mat-deep-orange);
+// Create the theme object (a Sass map containing all of the palettes).
+$candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($candy-app-theme);
+
+//  End Of Angular Material Themeing
+
+$primary:#263238;
+$secondaryColor: #455a64;
+$secondaryColor2: #212121;
+$background: #cfd8dc;
+
+body {
+  margin: 0 !important;
+  background-color: $background;
+  font-family: 'Roboto', sans-serif;
+  color: $secondaryColor;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.success {
+  color: #4BB543;
+}
+
+
+
+hr {
+  width: 80%;
+}
+
+.mat-table {
+  //background-color: $background;
+  text-align: center;
+}
+
+.disabledColor {
+  color: green;
+}
+
+// -----------  Flex Related  ----------------
+
+.flexRow {
+  display: flex;
+  flex-direction: row;
+}
+.flexColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.flexItem {
+  //width: 100%;
+  flex: 1;
+}
+
+/* for flex based divs only */
+.verticalCenter {
+  align-items: center;
+}
+.spaceBetween {
+  justify-content: space-between
+}
+.spaceAround {
+  justify-content: space-around;
+}
+.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+// --------  !FLex  ----------
+
+.chatStatsCmponent {
+  height: 100%;
+}
+
+.textCenter {
+  text-align: center;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.chatStatsNum {
+  // height: 100%;
+  // position: relative;
+  // bottom: 0px;
+  // left: 0;
+  // right: 0;
+}
+
+.mainComponentsBorder {
+  margin: 0px 10px;
+  padding: 15px;
+  border: solid 1px $secondaryColor;
+  border-radius: 20px;
+}
+
+.scheduleCard {
+  //height: 50vh;
+}
+
+.schedulesHeader {
+  text-align: center;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.scheduleCardHead {
+  height: auto;
+  //overflow-y: auto;
+}
+.scheduleCardBody {
+  height: auto;
+  //overflow-y: auto;
+}
+
+
+.iconHeader {
+  font-size: 3em;
+  position: relative;
+  right: 12px;
+  color: $secondaryColor;
+}
+.headerText {
+  color: $secondaryColor;
+}
+
+
+
+

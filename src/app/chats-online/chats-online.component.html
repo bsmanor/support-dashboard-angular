@@ -1,0 +1,9 @@
+<div class="textCenter headerText chatStatsCmponent">
+    <mat-icon class="iconHeader">bubble_chart</mat-icon>
+    <h1>Online</h1>
+    <mat-chip-list *ngIf="onlineAgents.length" style="height: 100%;">
+        <mat-chip class="success" *ngFor="let agent of onlineAgents" class="textCenter" style="margin-bottom:5px;width:100%;">
+           {{agent.agentName}}<span style="float:right;">{{agent.numOfChats}}</span>
+        </mat-chip>
+    </mat-chip-list>
+</div>

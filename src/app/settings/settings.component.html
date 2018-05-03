@@ -1,0 +1,13 @@
+<div class="flexRow verticalCenter spaceAround">
+  <mat-card *ngFor="let card of settingsCards" class="settingsCard">
+    <mat-card-title>{{card.title}}</mat-card-title>
+    <mat-card-subtitle>{{card.subTitle}}</mat-card-subtitle>
+    <img matCardImage src="https://cdn.pixabay.com/photo/2018/02/16/14/09/business-man-3157759_960_720.jpg">
+    <mat-card-content>
+      Text content
+    </mat-card-content>
+    <mat-card-actions align="start">
+        <a routerLink={{card.route}} routerLinkActive="active" class="link"><button mat-button>{{card.actionButtonText}}</button></a>
+    </mat-card-actions>
+  </mat-card>
+</div>

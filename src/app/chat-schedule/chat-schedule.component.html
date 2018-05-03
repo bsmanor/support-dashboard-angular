@@ -1,0 +1,66 @@
+<mat-card class="scheduleCard mainComponentsBorder">
+  <div class="scheduleCardHead">
+    <div class="textCenter flexRow spaceBetween">
+      <div id="placegolder" style="flex:1;"></div>
+      <!-- <mat-icon class="iconHeader" style="flex:1;left:2px;">chat</mat-icon> -->
+      <img src="https://cdn.livechatinc.com/website/media/img/resources/logos/livechat_96x53.png" alt="Live Chat Software">
+      <div style="flex:1;">
+        <button mat-icon-button [matMenuTriggerFor]="menu" style="float:right;">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="openAddChatDialog()">
+            <mat-icon>edit</mat-icon>
+            <span>Edit</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>add</mat-icon>
+            <span>New Message</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+    
+    <!-- <h2 class="schedulesHeader headerText">Chat Schedule</h2> -->
+    <!-- <mat-divider></mat-divider> -->
+    
+    <div style="text-align:center;margin:15px 0px;">
+      <mat-icon class="dateArrows" style="float:left;" (click)="daysOffest(-1)">keyboard_arrow_left</mat-icon>
+      <span id="chatDate" style="position: relative;top: 5px;">{{now.dayOfWeek}},  {{now.month}}  {{now.dayOfMonth}}</span>
+      <mat-icon class="dateArrows" style="float:right;" (click)="daysOffest(1)">keyboard_arrow_right</mat-icon>
+    </div>
+  </div>
+    
+  <div class="scheduleCardBody">
+    <p>{{message}}</p>
+    <mat-table *ngIf="dataSource" #table [dataSource]="dataSource" class="flexRow spaceBetween mat-table">
+      
+      <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+        
+        <!-- agent Column -->
+        <ng-container matColumnDef="agent">
+          <mat-header-cell *matHeaderCellDef>Agent</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.agent}}</mat-cell>
+        </ng-container>
+        
+        <!-- start Column -->
+        <ng-container matColumnDef="start" class="textCenter">
+          <mat-header-cell *matHeaderCellDef>Start</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.start}}</mat-cell>
+        </ng-container>
+        
+        <!-- end Column -->
+        <ng-container matColumnDef="end" class="textCenter">
+          <mat-header-cell *matHeaderCellDef>End</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.end}}</mat-cell>
+        </ng-container>
+        
+        <mat-header-row *matHeaderRowDef="displayedColumns" style="position:sticky;top:0px;background-color:inherit;"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+      
+      <div *ngIf="!dataSource" style="height:100%;" class="center"><mat-icon>local_cafe</mat-icon><p>{{noChatsMessage}}</p></div>
+    </div>
+      
+</mat-card>
