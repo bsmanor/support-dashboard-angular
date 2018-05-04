@@ -54,25 +54,30 @@ export class ChatsOnlineComponent implements OnInit {
   subscribeToLivechatEvents() {
     this.webhooksListenersService.livechatEvents().subscribe((res) => {
       let event = res.event;
-      if(event === 1 || event === 2) {
-        this.onlineAgents = [];
-        this.getLiveChatChattingVisitors();
+      if(event === 1) {
+        console.log('Chat started');
       }
+      if(event === 2) {
+        console.log('Chat ended');
+      }
+      if(event === 3) {
+        console.log('New visitor in the queue');
+      }
+      
+      this.getLiveChatChattingVisitors();
+      
     })
   }
-
-  getLiveChatAgentsStatus() {
-    this.chatStatsService.getLiveChatAgentsStatus().subscribe((res) => {
-      console.log(res);
-    })
-  }
-
+  
+  
   getLiveChatChattingVisitors() {
+    this.onlineAgents.length = 0;
     this.chatStatsService.getLiveChatChattingVisitors().subscribe((res: LiveChatVisitors) => {
       for(let chat of res.response) {
         for(let agent of chat.chat.agents) {
           if(this.onlineAgents.length >= 1) {
             for(let i in this.onlineAgents) {
+              
               if(this.onlineAgents[i].agentName === agent.display_name) {
                 this.onlineAgents[i].numOfChats++;
                 this.onlineAgents[i].chats.push({
@@ -88,10 +93,10 @@ export class ChatsOnlineComponent implements OnInit {
               agentName: agent.display_name,
               numOfChats: 1,
               chats: [{
-              clientName: chat.name,
-              startedAt: chat.chat_start_time,
-              city: chat.city,
-              country: chat.country
+                clientName: chat.name,
+                startedAt: chat.chat_start_time,
+                city: chat.city,
+                country: chat.country
               }]
             }
             this.onlineAgents.push(new OnlineAgent(tempAgent));
@@ -100,11 +105,17 @@ export class ChatsOnlineComponent implements OnInit {
       }
     })
   }
-
-  ngOnInit() {
-    this.getLiveChatChattingVisitors();
-    this.getLiveChatAgentsStatus();
-    this.subscribeToLivechatEvents();
+  
+  getLiveChatAgentsStatus() {
+    this.chatStatsService.getLiveChatAgentsStatus().subscribe((res) => {
+      console.log(res);
+    })
   }
 
+  ngOnInit() {
+    //this.getLiveChatChattingVisitors();
+    //this.getLiveChatAgentsStatus();
+    this.subscribeToLivechatEvents();
+  }
+  
 }
