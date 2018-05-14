@@ -30,8 +30,6 @@ export class ChatsQueuedComponent implements OnInit {
 
   getLiveChatQueuedVisitors() {
     this.chatStatsService.getLiveChatQueuedVisitors().subscribe((res: Queued) => {
-      console.log('Queued visitors:');
-      console.log(res);
       this.queued = res.response.length;
     })
   }

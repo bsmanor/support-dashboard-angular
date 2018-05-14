@@ -8,6 +8,7 @@ const db = admin.firestore();
 
 // DB Collections:
 const livechatRef = db.collection('webhooks').doc('livechat');
+const zendeskRef = db.collection('webhooks').doc('zendesk');
 
 const cors = require('cors')({origin: true});
 
@@ -55,7 +56,7 @@ export const liveChatTodayRatings = functions.https.onRequest((req, res) => { //
 
 export const liveChatChattingVisitors = functions.https.onRequest((req, res) => { // All Currently Chating Visitors
   cors(req, res, () => {
-    liveChatApi.visitors.list({state: 'chatting'}, (data) => {
+    liveChatApi.visitors.list({state: 'chatting', group: [2,12]}, (data) => {
       res.status(200).json({response: data})
     })
   })
@@ -71,18 +72,22 @@ export const liveChatQueuedVisitors = functions.https.onRequest((req, res) => { 
 
 export const liveChatAgentsStatus = functions.https.onRequest((req, res) => { // All Agents Status
   cors(req, res, () => {
-    fetch("https://api.livechatinc.com/agents", {
-      headers: {
-        method: 'POST',
-        Authorization: "Basic manor@tune.com:4a96a80f4cb036ec84c4585ab7a5139d",
-        "X-Api-Version": "2"
-      }
+    liveChatApi.agents.list({}, (data) => {
+      console.log(data)
+      res.status(200).json({response: data})
     })
-    .then(response => {
-      res.status(200).json({response: response})
-    })
-    .catch(err => {
-      res.status(500).json({response: err})
+  })
+})
+
+export const liveChatAgentStatus = functions.https.onRequest((req, res) => { // Specific Agent's Status
+  let login = req.query.login;
+  console.log('====================================');
+  console.log(login);
+  console.log('====================================');
+  cors(req, res, () => {
+    liveChatApi.agents.get(login, (data) => {
+      console.log(data)
+      res.status(200).json({response: data})
     })
   })
 })
@@ -124,6 +129,26 @@ export const liveChatVisitorQueuedWebhook = functions.https.onRequest((req, res)
 })
 
 // --------- !LiveChat REST API ---------------
+
+
+
+
+// --------- Zendesk REST API ---------------
+
+
+export const zendeskNewTicketWebhook = functions.https.onRequest((req, res) => { // New visitor webhook
+  cors(req, res, () => {
+    zendeskRef.update({event: 2}) // Event 1 --> Ticket created
+    .then(response => {
+      res.status(200).json({response: 'Success'})
+    })
+    .catch(err => {
+      res.status(200).json({response: err})
+    })
+  })
+})
+
+// --------- !Zendesk REST API ---------------
 
 
 export const offerStatusChanged = functions.https.onRequest((req, res) => {

@@ -1,3 +1,4 @@
+import { WebhooksListenersService } from './../services/webhooks-listeners.service';
 import { SettingsCallbacksComponent } from './../settings-callbacks/settings-callbacks.component';
 import { Agent } from './../models/agent';
 import { AgentsService } from './../services/agents.service';
@@ -7,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { DialogCallbacksHistoryComponent } from './../dialog-callbacks-history/dialog-callbacks-history.component';
+
 
 @Component({
   selector: 'app-callbacks-schedule',
@@ -23,6 +25,7 @@ export class CallbacksScheduleComponent implements OnInit {
   constructor(
     private schedulesService: SchedulesService,
     private agentsService: AgentsService,
+    private webhooksListenersService: WebhooksListenersService,
     public dialog: MatDialog
   ) {}
 
@@ -68,6 +71,12 @@ export class CallbacksScheduleComponent implements OnInit {
         callback.date = `${moment(callback.date).format('MMM')} ${moment(callback.date).format('D')}`;
       }
     });
+  }
+
+  subscribeToZendeskCallbackEvents() {
+    this.webhooksListenersService.zendeskEvent.subscribe((snap) => {
+      console.log('Zendesk event occurred');
+    })
   }
   
   ngOnInit() {

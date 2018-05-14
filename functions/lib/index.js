@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const functions = require("firebase-functions");
-const node_fetch_1 = require("node-fetch");
 const moment = require("moment");
 const admin = require("firebase-admin");
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 // DB Collections:
 const livechatRef = db.collection('webhooks').doc('livechat');
+const zendeskRef = db.collection('webhooks').doc('zendesk');
 const cors = require('cors')({ origin: true });
 const LiveChatApi = require('livechatapi').LiveChatApi;
 const liveChatApi = new LiveChatApi('manor@tune.com', '4a96a80f4cb036ec84c4585ab7a5139d');
@@ -43,7 +43,7 @@ exports.liveChatTodayRatings = functions.https.onRequest((req, res) => {
 });
 exports.liveChatChattingVisitors = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
-        liveChatApi.visitors.list({ state: 'chatting' }, (data) => {
+        liveChatApi.visitors.list({ state: 'chatting', group: [2, 12] }, (data) => {
             res.status(200).json({ response: data });
         });
     });
@@ -57,17 +57,21 @@ exports.liveChatQueuedVisitors = functions.https.onRequest((req, res) => {
 });
 exports.liveChatAgentsStatus = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
-        node_fetch_1.default("https://api.livechatinc.com/agents", {
-            headers: {
-                Authorization: "Basic manor@tune.com:4a96a80f4cb036ec84c4585ab7a5139d",
-                "X-Api-Version": "2"
-            }
-        })
-            .then(response => {
-            res.status(200).json({ response: response });
-        })
-            .catch(err => {
-            res.status(500).json({ response: err });
+        liveChatApi.agents.list({}, (data) => {
+            console.log(data);
+            res.status(200).json({ response: data });
+        });
+    });
+});
+exports.liveChatAgentStatus = functions.https.onRequest((req, res) => {
+    let login = req.query.login;
+    console.log('====================================');
+    console.log(login);
+    console.log('====================================');
+    cors(req, res, () => {
+        liveChatApi.agents.get(login, (data) => {
+            console.log(data);
+            res.status(200).json({ response: data });
         });
     });
 });
@@ -105,6 +109,19 @@ exports.liveChatVisitorQueuedWebhook = functions.https.onRequest((req, res) => {
     });
 });
 // --------- !LiveChat REST API ---------------
+// --------- Zendesk REST API ---------------
+exports.zendeskNewTicketWebhook = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        zendeskRef.update({ event: 2 }) // Event 1 --> Ticket created
+            .then(response => {
+            res.status(200).json({ response: 'Success' });
+        })
+            .catch(err => {
+            res.status(200).json({ response: err });
+        });
+    });
+});
+// --------- !Zendesk REST API ---------------
 exports.offerStatusChanged = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
         console.log(req);

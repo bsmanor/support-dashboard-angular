@@ -101,8 +101,6 @@ export class ChatScheduleComponent implements OnInit{
 
   ngOnInit() {    
     this.getChatSchedule(this.dateOffset);
-    this.messagesService.getMessages().subscribe(message => {      
-    })
   }
 
 }
