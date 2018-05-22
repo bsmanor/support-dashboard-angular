@@ -137,23 +137,19 @@ export const liveChatVisitorQueuedWebhook = functions.https.onRequest((req, res)
 
 
 export const zendeskNewTicketWebhook = functions.https.onRequest((req, res) => { // New visitor webhook
+  let params = req.query.params;
+  let ticket = {
+    url: req.query.ticket_url,
+    id: req.query.ticket_id,
+    title: req.query.description
+  }
   cors(req, res, () => {
     zendeskRef.update({event: 2}) // Event 1 --> Ticket created
     .then(response => {
-      res.status(200).json({response: 'Success'})
+      res.status(200).json({response: ticket})
     })
     .catch(err => {
       res.status(200).json({response: err})
     })
-  })
-})
-
-// --------- !Zendesk REST API ---------------
-
-
-export const offerStatusChanged = functions.https.onRequest((req, res) => {
-  cors(req, res, () => {
-    console.log(req);
-    res.status(200).send(req.body);
   })
 })
