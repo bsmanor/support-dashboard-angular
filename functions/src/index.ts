@@ -1,4 +1,5 @@
 import * as functions from 'firebase-functions';
+import { Callback } from './../../src/app/models/callback';
 import * as http from "http";
 import fetch from "node-fetch";
 import * as moment from "moment";
@@ -9,6 +10,7 @@ const db = admin.firestore();
 // DB Collections:
 const livechatRef = db.collection('webhooks').doc('livechat');
 const zendeskRef = db.collection('webhooks').doc('zendesk');
+const callbacksRef = db.collection('callbacks');
 
 const cors = require('cors')({origin: true});
 
@@ -136,16 +138,27 @@ export const liveChatVisitorQueuedWebhook = functions.https.onRequest((req, res)
 // --------- Zendesk REST API ---------------
 
 
-export const zendeskNewTicketWebhook = functions.https.onRequest((req, res) => { // New visitor webhook
-  let params = req.query.params;
-  let ticket = {
+export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => { // New visitor webhook
+  const params = req.query.params;
+  const ticket = {
     url: req.query.ticket_url,
     id: req.query.ticket_id,
     title: req.query.description
   }
+  const callback: Callback = {
+    username: null,
+    networkId: null,
+    date: null,
+    time: null,
+    assignee: null,
+    ticketId: ticket.id,
+    zendeskLink: ticket.url,
+    status: null,
+    statusMessage: null,
+  }
   cors(req, res, () => {
-    zendeskRef.update({event: 2}) // Event 1 --> Ticket created
-    .then(response => {
+    callbacksRef.add(callback)
+    .then(snap => {
       res.status(200).json({response: ticket})
     })
     .catch(err => {
