@@ -1,10 +1,12 @@
+
+import {map} from 'rxjs/operators';
 import { Callback } from './../models/callback';
 import { Element } from './../chat-schedule/chat-schedule.component';
 import { ChatSchedule } from './../models/chat-schedule';
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection, DocumentChangeAction } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import * as firebase from 'firebase';
 
 interface Date {
@@ -58,13 +60,13 @@ export class SchedulesService {
   };
 
   getCallbacksMeta() {
-    return this.CallbacksMeta.map(actions => {
+    return this.CallbacksMeta.pipe(map(actions => {
       return actions.map(a => {
         const data = a.payload.doc.data() as Callback;
         const id = a.payload.doc.id;
         return { id, ...data };
       }).filter(callback => {return callback.status === 'Pending'})
-    })
+    }))
   };
 
   getAllCallbacks() {

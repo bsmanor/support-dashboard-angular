@@ -1,6 +1,6 @@
 import { ChatSchedule } from './../models/chat-schedule';
 import { SchedulesService } from './../services/schedules.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import {AgentsService} from '../services/agents.service';

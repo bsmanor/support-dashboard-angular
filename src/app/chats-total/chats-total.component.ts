@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { ChatStatsService } from './../services/chat-stats.service';
 import { ChatStats } from './../models/chat-stats';
