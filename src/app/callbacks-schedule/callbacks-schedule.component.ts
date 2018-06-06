@@ -68,7 +68,11 @@ export class CallbacksScheduleComponent implements OnInit {
         this.agentsService.getAgent(callback.assignee).subscribe(agent => {
           callback.agent = agent;
         });
-        callback.dateTime = `${moment(callback.dateTime).format('MMM')} ${moment(callback.dateTime).format('D')}`;
+        let date = callback.dateTime.slice((callback.dateTime.indexOf(',') + 2 - callback.dateTime.length));
+        let unix = moment(date).unix()
+        console.log(unix);
+        
+        callback.dateTimeUnixTimestamp = `${moment(callback.dateTime).format('MMM')} ${moment(callback.dateTime).format('D')}`;
       }
     });
   }

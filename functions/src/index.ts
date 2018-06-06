@@ -135,12 +135,13 @@ export const liveChatVisitorQueuedWebhook = functions.https.onRequest((req, res)
 // --------- Zendesk REST API ---------------
 
 
-export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => { // New visitor webhook
+export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => { // New callback webhook
   const params = req.query.params;
   const ticket: CallbackTicket = {
     url: req.query.ticket_url,
     id: req.query.ticket_id,
-    description: req.query.description
+    description: req.query.description,
+    title: req.query.title
   }
 
   const sliceFromString = (myString: string, startsWith: string, endsWith: string): string => {
@@ -156,16 +157,16 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
   const callback: Callback = {
     username: sliceFromString(ticket.description, 'Invitee: ', 'Invitee Email:'),
     networkId: sliceFromString(ticket.description, 'Network ID', 'Sent from Calendly'),
-    description: ticket.description,
-    dateTime: sliceFromString(ticket.description, 'Event Date/Time:', ' (Pacific Time - US & Canada)'),
+    description: ticket.title,
+    dateTime: sliceFromString(ticket.description, 'Event Date/Time:', '(Pacific'),
+    dateTimeUnixTimestamp: moment(sliceFromString(ticket.description, 'Event Date/Time:', '(Pacific')).format('X'),
     assignee: 'Not Assigned',
     ticketId: ticket.id,
     zendeskLink: ticket.url,
     status: 'Open',
     statusMessage: 'The client is waiting for a call. No other info is needed or requested by us',
     email: sliceFromString(ticket.description, 'Invitee Email:', 'Event Date/Time:'),
-    phone: sliceFromString(ticket.description, 'Invitee: ', 'Invitee Email:'),
-    skype: sliceFromString(ticket.description, 'Skype', 'Issue Summary'),
+    contactInfo: sliceFromString(ticket.description, 'Contact method (phone number, Skype id, etc.)', 'Issue Summary'),
     issueSummary: sliceFromString(ticket.description, 'Issue Summary', 'Network ID'),
   }
 
@@ -177,5 +178,12 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
     .catch(err => {
       res.status(200).json({response: err})
     })
+  })
+})
+
+
+export const zendeskNewTicketkWebhook = functions.https.onRequest((req, res) => { // New ticket webhook
+  cors(req, res, () => {
+    res.status(200).json({response: 'sucess'})
   })
 })

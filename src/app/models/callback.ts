@@ -3,6 +3,7 @@ export interface Callback {
   username: string;
   networkId: string;
   dateTime: string;
+  dateTimeUnixTimestamp: string;
   assignee: string;
   description: string;
   agent?: Agent;
@@ -11,7 +12,6 @@ export interface Callback {
   status: string;
   statusMessage: string;
   email: string;
-  phone: string;
-  skype: string;
+  contactInfo: string;
   issueSummary: string;
 }

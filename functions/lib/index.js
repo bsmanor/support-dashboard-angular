@@ -115,7 +115,8 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
     const ticket = {
         url: req.query.ticket_url,
         id: req.query.ticket_id,
-        description: req.query.description
+        description: req.query.description,
+        title: req.query.title
     };
     const sliceFromString = (myString, startsWith, endsWith) => {
         const start = myString.indexOf(startsWith) + startsWith.length;
@@ -130,16 +131,16 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
     const callback = {
         username: sliceFromString(ticket.description, 'Invitee: ', 'Invitee Email:'),
         networkId: sliceFromString(ticket.description, 'Network ID', 'Sent from Calendly'),
-        description: ticket.description,
-        dateTime: sliceFromString(ticket.description, 'Event Date/Time:', ' (Pacific Time - US & Canada)'),
+        description: ticket.title,
+        dateTime: sliceFromString(ticket.description, 'Event Date/Time:', '(Pacific'),
+        dateTimeUnixTimestamp: moment(sliceFromString(ticket.description, 'Event Date/Time:', '(Pacific')).format('X'),
         assignee: 'Not Assigned',
         ticketId: ticket.id,
         zendeskLink: ticket.url,
         status: 'Open',
         statusMessage: 'The client is waiting for a call. No other info is needed or requested by us',
         email: sliceFromString(ticket.description, 'Invitee Email:', 'Event Date/Time:'),
-        phone: sliceFromString(ticket.description, 'Invitee: ', 'Invitee Email:'),
-        skype: sliceFromString(ticket.description, 'Skype', 'Issue Summary'),
+        contactInfo: sliceFromString(ticket.description, 'Contact method (phone number, Skype id, etc.)', 'Issue Summary'),
         issueSummary: sliceFromString(ticket.description, 'Issue Summary', 'Network ID'),
     };
     cors(req, res, () => {
