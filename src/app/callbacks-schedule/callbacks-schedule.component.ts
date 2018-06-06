@@ -68,6 +68,14 @@ export class CallbacksScheduleComponent implements OnInit {
         this.agentsService.getAgent(callback.assignee).subscribe(agent => {
           callback.agent = agent;
         });
+        let hour: string;
+        if(callback.dateTime.indexOf('pm') === -1) { // checks if the hour is am or pm
+          hour = callback.dateTime.slice(callback.dateTime.indexOf('am') + 2)
+        } else {
+          hour = callback.dateTime.slice(callback.dateTime.indexOf('pm') + 2)
+        }
+        console.log(`Hour: ${hour}`);
+        
         let date = callback.dateTime.slice((callback.dateTime.indexOf(',') + 2 - callback.dateTime.length));
         let unix = moment(date).unix()
         console.log(unix);
