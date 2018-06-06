@@ -20,10 +20,10 @@ interface DailyChatResponse {
 })
 
 export class ChatScheduleComponent implements OnInit{
-  
+
   displayedColumns = ['agent', 'start', 'end']; // Mat table related
   dataSource: Element[]; // Mat table related
-  
+
   dateOffset = 0;
   now = {
     year: moment().add(this.dateOffset, 'days').format('YYYY'),
@@ -35,7 +35,7 @@ export class ChatScheduleComponent implements OnInit{
   };
 
   noChatsMessage = 'No chat schedule was set  for today';
-    
+
   constructor(
     private schedulesService: SchedulesService,
     private agentsService: AgentsService,
@@ -48,29 +48,29 @@ export class ChatScheduleComponent implements OnInit{
 
   // ------------ Dialogs ----------------------
   openAddChatDialog() {
-    let dialogRef = this.dialog.open(SettingsChatComponent, {
+    const dialogRef = this.dialog.open(SettingsChatComponent, {
       width: '600px',
       height: 'auto'
-    })
-  };
+    });
+  }
 
   openWeeklyChatDialog() {
-    let dialogRef = this.dialog.open(SettingsChatComponent, {
+    const dialogRef = this.dialog.open(SettingsChatComponent, {
       width: '600px',
       height: 'auto'
-    })
-  };
+    });
+  }
   openNoChatMessageDialog() {
-    let dialogRef = this.dialog.open(DialogChatMessageComponent, {
+    const dialogRef = this.dialog.open(DialogChatMessageComponent, {
       width: '600px',
       height: '300px'
-    })
-  };
+    });
+  }
   // ------------ End of Dialogs ----------------------
 
 
   getChatSchedule(dateOffset) {
-    let now = {
+    const now = {
       year: moment().add(this.dateOffset, 'days').format('YYYY'),
       month: moment().add(this.dateOffset, 'days').format('MMMM'),
       week: moment().add(this.dateOffset, 'days').format('w'),
@@ -80,31 +80,30 @@ export class ChatScheduleComponent implements OnInit{
     };
     this.schedulesService.getDailyChatSchedule(now).subscribe((res: DailyChatResponse) => {
       if(res) {
-        let dailyChatRes: Element[] = JSON.parse(res.content);
+        const dailyChatRes: Element[] = JSON.parse(res.content);
         for(let row of dailyChatRes) {
           let agent = this.agentsService.getAgent(row.agent).subscribe((agent: Agent) => {
             row.agent = agent.given_name;
-          })
+          });
         }
         this.dataSource = dailyChatRes;
       } else {
         this.dataSource = null;
       }
-    })
+    });
     this.now = now;
   }
 
   daysOffest(num: number) {
     this.dateOffset = this.dateOffset + num;
     this.getChatSchedule(this.daysOffest);
-  };
+  }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.getChatSchedule(this.dateOffset);
   }
 
 }
-
 export interface Element {
   agent: string;
   start: string;

@@ -25,21 +25,21 @@ export class SettingsCallbacksComponent implements OnInit {
     })
   }
 
-  saveCallback(username, networkId, date, time, assignee, ticketId) {
-    console.log(username, networkId, date, time, assignee, ticketId);
-    let callback: Callback = {
-      username: username,
-      networkId: networkId,
-      date: date,
-      time: time,
-      assignee: assignee,
-      ticketId: ticketId,
-      zendeskLink: `https://tune.zendesk.com/agent/tickets/${ticketId}`,
-      status: 'Pending',
-      statusMessage: 'No updates on this one'
-    };
-    this.schedulesService.setCallback(callback);
-  };
+  // saveCallback(username, networkId, date, time, assignee, ticketId) {
+  //   console.log(username, networkId, date, time, assignee, ticketId);
+  //   const callback: Callback = {
+  //     username: username,
+  //     networkId: networkId,
+  //     dateTime: date,
+  //     description: null,
+  //     assignee: assignee,
+  //     ticketId: ticketId,
+  //     zendeskLink: `https://tune.zendesk.com/agent/tickets/${ticketId}`,
+  //     status: 'Pending',
+  //     statusMessage: 'No updates on this one'
+  //   };
+  //   this.schedulesService.setCallback(callback);
+  // };
 
   ngOnInit() {
   }

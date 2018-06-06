@@ -41,34 +41,34 @@ export class CallbacksScheduleComponent implements OnInit {
   }
 
   openCallabckHistoryDialog() {
-    let dialogRef = this.dialog.open(DialogCallbacksHistoryComponent, {
+    const dialogRef = this.dialog.open(DialogCallbacksHistoryComponent, {
       width: '500px',
-    })
-  };
+    });
+  }
 
   openAddCallbackDialog() {
-    let dialogRef = this.dialog.open(SettingsCallbacksComponent, {
+    const dialogRef = this.dialog.open(SettingsCallbacksComponent, {
       width: '500px'
-    })
+    });
   }
 
   getCallbacks() {
     this.schedulesService.getUpcomingCallbacks(this.today, 3).subscribe(res => {
       this.upcomingCallbacks = res;
-      for(let callback of this.upcomingCallbacks){
+      for(let callback of this.upcomingCallbacks) {
         this.agentsService.getAgent(callback.assignee).subscribe(agent => {
           callback.agent = agent;
-        })
+        });
       }
     });
 
-    this.schedulesService.getCallbacksMeta().subscribe(res => {      
+    this.schedulesService.getAllCallbacks().subscribe(res => {
       this.allCallbacks = res;
-      for(let callback of this.allCallbacks){
+      for(let callback of this.allCallbacks) {
         this.agentsService.getAgent(callback.assignee).subscribe(agent => {
           callback.agent = agent;
-        });        
-        callback.date = `${moment(callback.date).format('MMM')} ${moment(callback.date).format('D')}`;
+        });
+        callback.dateTime = `${moment(callback.dateTime).format('MMM')} ${moment(callback.dateTime).format('D')}`;
       }
     });
   }
@@ -76,9 +76,9 @@ export class CallbacksScheduleComponent implements OnInit {
   subscribeToZendeskCallbackEvents() {
     this.webhooksListenersService.zendeskEvent.subscribe((snap) => {
       console.log('Zendesk event occurred');
-    })
+    });
   }
-  
+
   ngOnInit() {
     this.getCallbacks();
     console.log(this.allCallbacks);

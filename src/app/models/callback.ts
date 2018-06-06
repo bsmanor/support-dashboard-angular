@@ -2,12 +2,16 @@ import { Agent } from './agent';
 export interface Callback {
   username: string;
   networkId: string;
-  date: string;
-  time: string;
+  dateTime: string;
   assignee: string;
+  description: string;
   agent?: Agent;
-  ticketId: number;
+  ticketId: string;
   zendeskLink: string;
   status: string;
   statusMessage: string;
+  email: string;
+  phone: string;
+  skype: string;
+  issueSummary: string;
 }

@@ -1,10 +1,12 @@
 import * as functions from 'firebase-functions';
 import { Callback } from './../../src/app/models/callback';
 import * as http from "http";
-import fetch from "node-fetch";
 import * as moment from "moment";
 import * as admin from "firebase-admin";
-admin.initializeApp(functions.config().firebase);
+import { CallbackTicket } from './../models';
+// The Firebase Admin SDK to access the Firebase Realtime Database.
+admin.initializeApp();
+
 const db = admin.firestore();
 
 // DB Collections:
@@ -16,11 +18,6 @@ const cors = require('cors')({origin: true});
 
 const LiveChatApi = require('livechatapi').LiveChatApi;
 const liveChatApi = new LiveChatApi('manor@tune.com', '4a96a80f4cb036ec84c4585ab7a5139d');
-
-
-// Start writing Firebase Functions
-// https://firebase.google.com/docs/functions/typescript
-
 
 const yyyymmdd = (date) => {
   const yyyy = moment(date).format('YYYY');
@@ -140,22 +137,38 @@ export const liveChatVisitorQueuedWebhook = functions.https.onRequest((req, res)
 
 export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => { // New visitor webhook
   const params = req.query.params;
-  const ticket = {
+  const ticket: CallbackTicket = {
     url: req.query.ticket_url,
     id: req.query.ticket_id,
-    title: req.query.description
+    description: req.query.description
   }
+
+  const sliceFromString = (myString: string, startsWith: string, endsWith: string): string => {
+    const start =  myString.indexOf(startsWith) + startsWith.length;
+    const end = myString.indexOf(endsWith);
+    if(myString.slice(start, end).trim().length === 0) {
+      return 'empty'
+    } else {
+      return myString.slice(start, end).trim();
+    }
+  }
+
   const callback: Callback = {
-    username: null,
-    networkId: null,
-    date: null,
-    time: null,
-    assignee: null,
+    username: sliceFromString(ticket.description, 'Invitee: ', 'Invitee Email:'),
+    networkId: sliceFromString(ticket.description, 'Network ID', 'Sent from Calendly'),
+    description: ticket.description,
+    dateTime: sliceFromString(ticket.description, 'Event Date/Time:', ' (Pacific Time - US & Canada)'),
+    assignee: 'Not Assigned',
     ticketId: ticket.id,
     zendeskLink: ticket.url,
-    status: null,
-    statusMessage: null,
+    status: 'Open',
+    statusMessage: 'The client is waiting for a call. No other info is needed or requested by us',
+    email: sliceFromString(ticket.description, 'Invitee Email:', 'Event Date/Time:'),
+    phone: sliceFromString(ticket.description, 'Invitee: ', 'Invitee Email:'),
+    skype: sliceFromString(ticket.description, 'Skype', 'Issue Summary'),
+    issueSummary: sliceFromString(ticket.description, 'Issue Summary', 'Network ID'),
   }
+
   cors(req, res, () => {
     callbacksRef.add(callback)
     .then(snap => {
