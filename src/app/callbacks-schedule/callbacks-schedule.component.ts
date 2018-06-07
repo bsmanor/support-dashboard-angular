@@ -9,7 +9,6 @@ import * as moment from 'moment';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { DialogCallbacksHistoryComponent } from './../dialog-callbacks-history/dialog-callbacks-history.component';
 
-
 @Component({
   selector: 'app-callbacks-schedule',
   templateUrl: './callbacks-schedule.component.html',
@@ -69,16 +68,21 @@ export class CallbacksScheduleComponent implements OnInit {
           callback.agent = agent;
         });
         let hour: string;
-        if(callback.dateTime.indexOf('pm') === -1) { // checks if the hour is am or pm
-          hour = callback.dateTime.slice(callback.dateTime.indexOf('am') + 2)
+        // checks if the hour is am or pm and setting the hour variable acordingly
+        if(callback.dateTime.indexOf('pm') === -1) {
+          callback.hour = callback.dateTime.slice(0, callback.dateTime.indexOf('am'))
         } else {
-          hour = callback.dateTime.slice(callback.dateTime.indexOf('pm') + 2)
+          callback.hour = callback.dateTime.slice(0, callback.dateTime.indexOf('pm'))
+          callback.hour = `${parseInt(callback.hour.slice(0,2)) + 12}${callback.hour.slice(2,5)}`;         
+          //console.log(callback.hour);
+          
         }
-        console.log(`Hour: ${hour}`);
         
-        let date = callback.dateTime.slice((callback.dateTime.indexOf(',') + 2 - callback.dateTime.length));
-        let unix = moment(date).unix()
-        console.log(unix);
+        // Creating a unix timestamp of the scheduled callback date
+        let date = moment(`${callback.dateTime.slice(callback.dateTime.indexOf(',') + 2 - callback.dateTime.length)}, ${callback.hour}`).format('X');
+        //let unix = moment(date).unix()
+        console.log(date)
+        //console.log(unix);
         
         callback.dateTimeUnixTimestamp = `${moment(callback.dateTime).format('MMM')} ${moment(callback.dateTime).format('D')}`;
       }

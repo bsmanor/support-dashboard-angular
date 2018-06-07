@@ -4,6 +4,7 @@ export interface Callback {
   networkId: string;
   dateTime: string;
   dateTimeUnixTimestamp: string;
+  hour?: string;
   assignee: string;
   description: string;
   agent?: Agent;
