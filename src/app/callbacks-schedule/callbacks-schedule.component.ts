@@ -67,24 +67,6 @@ export class CallbacksScheduleComponent implements OnInit {
         this.agentsService.getAgent(callback.assignee).subscribe(agent => {
           callback.agent = agent;
         });
-        let hour: string;
-        // checks if the hour is am or pm and setting the hour variable acordingly
-        if(callback.dateTime.indexOf('pm') === -1) {
-          callback.hour = callback.dateTime.slice(0, callback.dateTime.indexOf('am'))
-        } else {
-          callback.hour = callback.dateTime.slice(0, callback.dateTime.indexOf('pm'))
-          callback.hour = `${parseInt(callback.hour.slice(0,2)) + 12}${callback.hour.slice(2,5)}`;         
-          //console.log(callback.hour);
-          
-        }
-        
-        // Creating a unix timestamp of the scheduled callback date
-        let date = moment(`${callback.dateTime.slice(callback.dateTime.indexOf(',') + 2 - callback.dateTime.length)}, ${callback.hour}`).format('X');
-        //let unix = moment(date).unix()
-        console.log(date)
-        //console.log(unix);
-        
-        callback.dateTimeUnixTimestamp = `${moment(callback.dateTime).format('MMM')} ${moment(callback.dateTime).format('D')}`;
       }
     });
   }

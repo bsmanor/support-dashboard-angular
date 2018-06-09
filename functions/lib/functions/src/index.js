@@ -143,6 +143,17 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
         contactInfo: sliceFromString(ticket.description, 'Contact method (phone number, Skype id, etc.)', 'Issue Summary'),
         issueSummary: sliceFromString(ticket.description, 'Issue Summary', 'Network ID'),
     };
+    // checks if the hour is am or pm and setting the hour variable acordingly
+    if (callback.dateTime.indexOf('pm') === -1) {
+        callback.hour = callback.dateTime.slice(0, callback.dateTime.indexOf('am'));
+    }
+    else {
+        callback.hour = callback.dateTime.slice(0, callback.dateTime.indexOf('pm'));
+        callback.hour = `${parseInt(callback.hour.slice(0, 2)) + 12}${callback.hour.slice(2, 5)}`;
+        //console.log(callback.hour);
+    }
+    // Creating a unix timestamp of the scheduled callback date
+    callback.dateTimeUnixTimestamp = moment(`${callback.dateTime.slice(callback.dateTime.indexOf(',') + 2 - callback.dateTime.length)}, ${callback.hour}`).format('X');
     cors(req, res, () => {
         callbacksRef.add(callback)
             .then(snap => {

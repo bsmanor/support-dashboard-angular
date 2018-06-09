@@ -36,7 +36,7 @@
       <img *ngIf="callback.agent" matListAvatar src={{callback.agent.picture}} alt="...">
       <h3 matLine>{{callback.username}} ({{callback.networkId}})</h3>
       <h3 matLine>{{callback.dateTime}}</h3>
-      <h3 matLine>{{callback.dateTimeUnixTimestamp}}</h3>
+      <h3 matLine>{{callback.dateTimeUnixTimestamp | date:"MM/dd/yy"}}</h3>
       <a href={{callback.zendeskLink}} target="_blank" mat-raised-button color="accent"># {{callback.ticketId}}</a>
       <div class="menuIcon" style="flex:1;">
           <button mat-icon-button [matMenuTriggerFor]="menu" style="float:right;">
