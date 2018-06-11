@@ -154,32 +154,52 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
     }
   }
 
-  const callback: Callback = {
-    username: sliceFromString(ticket.description, 'Invitee: ', 'Invitee Email:'),
-    networkId: sliceFromString(ticket.description, 'Network ID', 'Sent from Calendly'),
-    description: ticket.title,
-    dateTime: sliceFromString(ticket.description, 'Event Date/Time:', '(Pacific'),
-    dateTimeUnixTimestamp: moment(sliceFromString(ticket.description, 'Event Date/Time:', '(Pacific')).format('X'),
-    assignee: 'Not Assigned',
-    ticketId: ticket.id,
-    zendeskLink: ticket.url,
-    status: 'Open',
-    statusMessage: 'The client is waiting for a call. No other info is needed or requested by us',
-    email: sliceFromString(ticket.description, 'Invitee Email:', 'Event Date/Time:'),
-    contactInfo: sliceFromString(ticket.description, 'Contact method (phone number, Skype id, etc.)', 'Issue Summary'),
-    issueSummary: sliceFromString(ticket.description, 'Issue Summary', 'Network ID'),
-  }
-
-  // checks if the hour is am or pm and setting the hour variable acordingly
-  if(callback.dateTime.indexOf('pm') === -1) {
-    callback.hour = callback.dateTime.slice(0, callback.dateTime.indexOf('am'))
+  let callback: Callback;
+  
+  if(ticket.description.indexOf('')) {
+    callback = {
+      username: sliceFromString(ticket.description, 'Invitee: ', 'Invitee Email:'),
+      networkId: sliceFromString(ticket.description, 'Network ID', 'Sent from Calendly'),
+      description: ticket.title,
+      dateTime: sliceFromString(ticket.description, 'Event Date/Time:', '(Pacific'),
+      dateTimeUnixTimestamp: moment(sliceFromString(ticket.description, 'Event Date/Time:', '(Pacific')).format('X'),
+      assignee: 'Not Assigned',
+      ticketId: ticket.id,
+      zendeskLink: ticket.url,
+      status: 'Open',
+      statusMessage: 'The client is waiting for a call. No other info is needed or requested by us',
+      email: sliceFromString(ticket.description, 'Invitee Email:', 'Event Date/Time:'),
+      contactInfo: sliceFromString(ticket.description, 'Contact method (phone number, Skype id, etc.)', 'Issue Summary'),
+      issueSummary: sliceFromString(ticket.description, 'Issue Summary', 'Network ID')
+    }
+  
+    // checks if the hour is am or pm and setting the hour variable acordingly
+    if(callback.dateTime.indexOf('pm') === -1) {
+      callback.hour = callback.dateTime.slice(0, callback.dateTime.indexOf('am'))
+    } else {
+      callback.hour = callback.dateTime.slice(0, callback.dateTime.indexOf('pm'))
+      callback.hour = `${parseInt(callback.hour.slice(0,2)) + 12}${callback.hour.slice(2,5)}`;         
+      //console.log(callback.hour);
+    }
+    // Creating a unix timestamp of the scheduled callback date
+    callback.dateTimeUnixTimestamp = moment(`${callback.dateTime.slice(callback.dateTime.indexOf(',') + 2 - callback.dateTime.length)}, ${callback.hour}`).format('X');
   } else {
-    callback.hour = callback.dateTime.slice(0, callback.dateTime.indexOf('pm'))
-    callback.hour = `${parseInt(callback.hour.slice(0,2)) + 12}${callback.hour.slice(2,5)}`;         
-    //console.log(callback.hour);
+    callback = {
+      username: 'null',
+      networkId: 'null',
+      description: ticket.title,
+      dateTime: null,
+      dateTimeUnixTimestamp: 'null',
+      assignee: 'Not Assigned',
+      ticketId: ticket.id,
+      zendeskLink: ticket.url,
+      status: 'Open',
+      statusMessage: 'The client is waiting for a call. No other info is needed or requested by us',
+      email: 'null',
+      contactInfo: 'null',
+      issueSummary: 'null'
+    }
   }
-  // Creating a unix timestamp of the scheduled callback date
-  callback.dateTimeUnixTimestamp = moment(`${callback.dateTime.slice(callback.dateTime.indexOf(',') + 2 - callback.dateTime.length)}, ${callback.hour}`).format('X');
 
   cors(req, res, () => {
     callbacksRef.add(callback)

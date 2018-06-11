@@ -189,4 +189,3 @@ exports.zendeskNewTicketkWebhook = functions.https.onRequest((req, res) => {
         res.status(200).json({ response: 'sucess' });
     });
 });
-//# sourceMappingURL=index.js.map
