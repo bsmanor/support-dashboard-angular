@@ -35,15 +35,29 @@
     <mat-list-item class="callbacksList" *ngFor="let callback of allCallbacks" >
       <img *ngIf="callback.agent" matListAvatar src={{callback.agent.picture}} alt="...">
       <h3 matLine>{{callback.username}} ({{callback.networkId}})</h3>
-      <h3 matLine>{{callback.dateTime}}</h3>
-      <h3 matLine>{{callback.dateTimeUnixTimestamp | date:"MM/dd/yy"}}</h3>
+      <!-- <h3 matLine>{{callback.dateTime}}</h3> -->
+      <h3 matLine>{{callback.dateTimeUnixTimestamp * 1000 | date:'medium' : '+0300'}}</h3>
       <a href={{callback.zendeskLink}} target="_blank" mat-raised-button color="accent"># {{callback.ticketId}}</a>
       <div class="menuIcon" style="flex:1;">
+
           <button mat-icon-button [matMenuTriggerFor]="menu" style="float:right;">
             <mat-icon>more_vert</mat-icon>
           </button>
+
           <mat-menu #menu="matMenu">
+
     
+            <button mat-menu-item [matMenuTriggerFor]="agentsMenu">
+              <mat-icon>user</mat-icon>
+              <span>Assign</span>
+            </button>
+
+            <mat-menu #agentsMenu="matMenu">
+              <button mat-menu-item *ngFor="let agent of agents" (click)="assignAgentToCallback(agent, callback.ticketId)">
+                {{agent.name}}
+              </button>
+            </mat-menu>
+
             <button mat-menu-item (click)="updateCallback(callback.id, 'Done')">
               <mat-icon>done</mat-icon>
               <span>Mark as done</span>

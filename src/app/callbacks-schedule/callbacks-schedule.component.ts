@@ -19,7 +19,7 @@ export class CallbacksScheduleComponent implements OnInit {
   allCallbacks: Callback[];
   upcomingCallbacks: Callback[];
   today = `${moment().format('YYYY')}-${moment().format('MM')}-${moment().format('DD')}`.toString();
-
+  agents: Agent[] = [];
 
   constructor(
     private schedulesService: SchedulesService,
@@ -77,9 +77,17 @@ export class CallbacksScheduleComponent implements OnInit {
     });
   }
 
+  assignAgentToCallback(agent: string, ticketId: string) {
+    this.schedulesService.updateCallbackAssignee(agent, ticketId);
+  }
+
   ngOnInit() {
     this.getCallbacks();
-    console.log(this.allCallbacks);
+    this.agentsService.getAgents().subscribe(snap => {
+      for(let agent of snap) {
+        this.agents.push(agent)
+      }
+    })
   }
 
 }

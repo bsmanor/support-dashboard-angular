@@ -146,7 +146,13 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
 
   const sliceFromString = (myString: string, startsWith: string, endsWith: string): string => {
     const start =  myString.indexOf(startsWith) + startsWith.length;
-    const end = myString.indexOf(endsWith);
+    let end: number;
+    if(myString.indexOf(endsWith) != -1) { // Checks that the end string does exist, otherwise, will add + 1 to the end length. 
+      end = myString.indexOf(endsWith)
+    } else {
+      end = myString.indexOf(endsWith) + 1
+    }
+
     if(myString.slice(start, end).trim().length === 0) {
       return 'empty'
     } else {
@@ -156,7 +162,7 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
 
   let callback: Callback;
   
-  if(ticket.description.indexOf('')) {
+  if(ticket.description.search('HasOffers Technical Support callback') != -1) {
     callback = {
       username: sliceFromString(ticket.description, 'Invitee: ', 'Invitee Email:'),
       networkId: sliceFromString(ticket.description, 'Network ID', 'Sent from Calendly'),
@@ -187,8 +193,8 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
     callback = {
       username: 'null',
       networkId: 'null',
-      description: ticket.title,
-      dateTime: null,
+      description: 'null',
+      dateTime: 'null',
       dateTimeUnixTimestamp: 'null',
       assignee: 'Not Assigned',
       ticketId: ticket.id,
@@ -202,7 +208,7 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
   }
 
   cors(req, res, () => {
-    callbacksRef.add(callback)
+    callbacksRef.doc(ticket.id).set(callback)
     .then(snap => {
       res.status(200).json({response: ticket})
     })

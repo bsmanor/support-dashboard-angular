@@ -75,6 +75,10 @@ export class SchedulesService {
   updateCallback = (id, action) => {
     this.afs.doc(`callbacks/${id}`).update({status: action});
   }
+
+  updateCallbackAssignee = (agent, id) => {
+    this.afs.doc(`callbacks/${id}`).update({assignee: agent.id})
+  }
   deleteCallback = (id) => {
     this.afs.doc(`callbacks/${id}`).delete();
   }
