@@ -37,7 +37,7 @@
       <h3 matLine>{{callback.username}} ({{callback.networkId}})</h3>
       <!-- <h3 matLine>{{callback.dateTime}}</h3> -->
       <h3 matLine>{{callback.dateTimeUnixTimestamp * 1000 | date:'medium' : '+0300'}}</h3>
-      <a href={{callback.zendeskLink}} target="_blank" mat-raised-button color="accent"># {{callback.ticketId}}</a>
+      <a href="https://{{callback.zendeskLink}}" target="_blank" mat-raised-button color="accent"># {{callback.ticketId}}</a>
       <div class="menuIcon" style="flex:1;">
 
           <button mat-icon-button [matMenuTriggerFor]="menu" style="float:right;">

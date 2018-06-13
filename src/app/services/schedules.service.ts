@@ -9,6 +9,9 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import 'rxjs/add/operator/map';
 import {Observable} from 'rxjs/observable';
 import * as firebase from 'firebase';
+import { HttpClient } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
+
 
 interface Date {
   year: string;
@@ -30,8 +33,10 @@ export class SchedulesService {
   private callbacksRef: AngularFirestoreCollection<Callback>;
   callbacks: Observable<Callback[]>;
 
-  constructor( private afs: AngularFirestore ) {
-
+  constructor( 
+    private afs: AngularFirestore,
+    private http: HttpClient
+  ) {
     this.chatsRef = afs.collection<ChatSchedule>('chats');
     this.chats = this.chatsRef.valueChanges();
 
@@ -78,7 +83,22 @@ export class SchedulesService {
 
   updateCallbackAssignee = (agent, id) => {
     this.afs.doc(`callbacks/${id}`).update({assignee: agent.id})
+    .then(() => {
+
+    })
   }
+
+  assignZendeskCallbackToAgent() {
+    const url = 'https://tune.zendesk.com/api/v2/groups.json';
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'Authorization': 'manor@tune.com:Frankel*50'
+      })
+    };
+    return this.http.get(url, httpOptions)
+  }
+
   deleteCallback = (id) => {
     this.afs.doc(`callbacks/${id}`).delete();
   }

@@ -137,7 +137,7 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
     let callback;
     if (ticket.description.search('HasOffers Technical Support callback') != -1) {
         callback = {
-            username: sliceFromString(ticket.description, 'Invitee: ', 'Invitee Email:'),
+            username: sliceFromString(ticket.description, 'Invitee:', 'Invitee Email:'),
             networkId: sliceFromString(ticket.description, 'Network ID', 'Sent from Calendly'),
             description: ticket.title,
             dateTime: sliceFromString(ticket.description, 'Event Date/Time:', '(Pacific'),
