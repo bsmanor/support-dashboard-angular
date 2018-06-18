@@ -89,10 +89,8 @@ export class CallbacksScheduleComponent implements OnInit {
       }
     })
 
-    this.schedulesService.assignZendeskCallbackToAgent().subscribe(snap => {
-      console.log('====================================');
+    this.schedulesService.zendeskAssignAgentToTicket().subscribe((snap) => {
       console.log(snap);
-      console.log('====================================');
     })
   }
 

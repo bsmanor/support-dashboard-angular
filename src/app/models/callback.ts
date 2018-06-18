@@ -15,4 +15,5 @@ export interface Callback {
   email: string;
   contactInfo: string;
   issueSummary: string;
+  emailBody?: string;
 }

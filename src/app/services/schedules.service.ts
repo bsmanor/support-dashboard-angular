@@ -1,5 +1,3 @@
-
-import {map} from 'rxjs/operators';
 import { Callback } from './../models/callback';
 import { Element } from './../chat-schedule/chat-schedule.component';
 import { ChatSchedule } from './../models/chat-schedule';
@@ -11,6 +9,7 @@ import {Observable} from 'rxjs/observable';
 import * as firebase from 'firebase';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
+import axios from 'axios';
 
 
 interface Date {
@@ -88,15 +87,8 @@ export class SchedulesService {
     })
   }
 
-  assignZendeskCallbackToAgent() {
-    const url = 'https://tune.zendesk.com/api/v2/groups.json';
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        'Authorization': 'manor@tune.com:Frankel*50'
-      })
-    };
-    return this.http.get(url, httpOptions)
+  zendeskAssignAgentToTicket() {
+    return this.http.get('https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskAssignAgentToTicket')
   }
 
   deleteCallback = (id) => {

@@ -1,9 +1,9 @@
-import * as functions from 'firebase-functions';
-import { Callback } from './../../src/app/models/callback';
-import * as http from "http";
-import * as moment from "moment";
+import axios from 'axios';
 import * as admin from "firebase-admin";
-import { CallbackTicket } from './../models';
+import * as functions from 'firebase-functions';
+import * as moment from "moment";
+import { Callback } from './../../src/app/models/callback';
+import { CallbackTicket } from './models';
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 admin.initializeApp();
 
@@ -80,9 +80,6 @@ export const liveChatAgentsStatus = functions.https.onRequest((req, res) => { //
 
 export const liveChatAgentStatus = functions.https.onRequest((req, res) => { // Specific Agent's Status
   let login = req.query.login;
-  console.log('====================================');
-  console.log(login);
-  console.log('====================================');
   cors(req, res, () => {
     liveChatApi.agents.get(login, (data) => {
       console.log(data)
@@ -147,7 +144,7 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
   const sliceFromString = (myString: string, startsWith: string, endsWith: string): string => {
     const start =  myString.indexOf(startsWith) + startsWith.length;
     let end: number;
-    if(myString.indexOf(endsWith) != -1) { // Checks that the end string does exist, otherwise, will add + 1 to the end length. 
+    if(myString.indexOf(endsWith) !== -1) { // Checks that the end string does exist, otherwise, will add + 1 to the end length. 
       end = myString.indexOf(endsWith)
     } else {
       end = myString.indexOf(endsWith) + 1
@@ -162,7 +159,7 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
 
   let callback: Callback;
   
-  if(ticket.description.search('HasOffers Technical Support callback') != -1) {
+  if(ticket.description.search('HasOffers Technical Support callback') !== -1) {
     callback = {
       username: sliceFromString(ticket.description, 'Invitee:', 'Invitee Email:'),
       networkId: sliceFromString(ticket.description, 'Network ID', 'Sent from Calendly'),
@@ -176,7 +173,8 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
       statusMessage: 'The client is waiting for a call. No other info is needed or requested by us',
       email: sliceFromString(ticket.description, 'Invitee Email:', 'Event Date/Time:'),
       contactInfo: sliceFromString(ticket.description, 'Contact method (phone number, Skype id, etc.)', 'Issue Summary'),
-      issueSummary: sliceFromString(ticket.description, 'Issue Summary', 'Network ID')
+      issueSummary: sliceFromString(ticket.description, 'Issue Summary', 'Network ID'),
+      emailBody: ticket.description
     }
   
     // checks if the hour is am or pm and setting the hour variable acordingly
@@ -224,3 +222,21 @@ export const zendeskNewTicketkWebhook = functions.https.onRequest((req, res) => 
     res.status(200).json({response: 'sucess'})
   })
 })
+
+export const zendeskAssignAgentToTicket = functions.https.onRequest((req, res) => { // New ticket webhook
+  cors(req, res, () => {
+    axios.get('https://tune.zendesk.com/api/v2/groups.json', { 
+      headers: {
+        "Authorization": 'Basic bWFub3JAdHVuZS5jb206RnJhbmtlbCo1MA=='
+      }
+    })
+    .then((users) => {
+      console.log(users);
+      res.status(200).json({response: users.data})
+    })
+    .catch((err) => {
+      res.status(200).json({response: err})
+    })
+  })
+})
+

@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const axios_1 = require("axios");
+const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const moment = require("moment");
-const admin = require("firebase-admin");
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 admin.initializeApp();
 const db = admin.firestore();
@@ -65,9 +66,6 @@ exports.liveChatAgentsStatus = functions.https.onRequest((req, res) => {
 });
 exports.liveChatAgentStatus = functions.https.onRequest((req, res) => {
     let login = req.query.login;
-    console.log('====================================');
-    console.log(login);
-    console.log('====================================');
     cors(req, res, () => {
         liveChatApi.agents.get(login, (data) => {
             console.log(data);
@@ -121,7 +119,7 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
     const sliceFromString = (myString, startsWith, endsWith) => {
         const start = myString.indexOf(startsWith) + startsWith.length;
         let end;
-        if (myString.indexOf(endsWith) != -1) {
+        if (myString.indexOf(endsWith) !== -1) { // Checks that the end string does exist, otherwise, will add + 1 to the end length. 
             end = myString.indexOf(endsWith);
         }
         else {
@@ -135,7 +133,7 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
         }
     };
     let callback;
-    if (ticket.description.search('HasOffers Technical Support callback') != -1) {
+    if (ticket.description.search('HasOffers Technical Support callback') !== -1) {
         callback = {
             username: sliceFromString(ticket.description, 'Invitee:', 'Invitee Email:'),
             networkId: sliceFromString(ticket.description, 'Network ID', 'Sent from Calendly'),
@@ -149,7 +147,8 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
             statusMessage: 'The client is waiting for a call. No other info is needed or requested by us',
             email: sliceFromString(ticket.description, 'Invitee Email:', 'Event Date/Time:'),
             contactInfo: sliceFromString(ticket.description, 'Contact method (phone number, Skype id, etc.)', 'Issue Summary'),
-            issueSummary: sliceFromString(ticket.description, 'Issue Summary', 'Network ID')
+            issueSummary: sliceFromString(ticket.description, 'Issue Summary', 'Network ID'),
+            emailBody: ticket.description
         };
         // checks if the hour is am or pm and setting the hour variable acordingly
         if (callback.dateTime.indexOf('pm') === -1) {
@@ -193,6 +192,30 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
 exports.zendeskNewTicketkWebhook = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
         res.status(200).json({ response: 'sucess' });
+    });
+});
+exports.zendeskAssignAgentToTicket = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        // axios.get('https://jsonplaceholder.typicode.com/users')
+        // .then((users) => {
+        //   console.log(users);
+        //   res.status(200).send(users)
+        // })
+        // .catch((err) => {
+        //   res.status(200).json({response: err})
+        // })
+        axios_1.default.get('https://tune.zendesk.com/api/v2/groups.json', {
+            headers: {
+                "Authorization": 'Basic bWFub3JAdHVuZS5jb206RnJhbmtlbCo1MA=='
+            }
+        })
+            .then((users) => {
+            console.log(users);
+            res.status(200).json({ response: users.data });
+        })
+            .catch((err) => {
+            res.status(200).json({ response: err });
+        });
     });
 });
 //# sourceMappingURL=index.js.map

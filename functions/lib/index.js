@@ -121,13 +121,12 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
     const sliceFromString = (myString, startsWith, endsWith) => {
         const start = myString.indexOf(startsWith) + startsWith.length;
         let end;
-        if (myString.indexOf(endsWith) != -1) {
+        if (myString.indexOf(endsWith) !== -1) { // Checks that the end string does exist, otherwise, will add + 1 to the end length. 
             end = myString.indexOf(endsWith);
         }
         else {
             end = myString.indexOf(endsWith) + 1;
         }
-        
         if (myString.slice(start, end).trim().length === 0) {
             return 'empty';
         }
@@ -136,7 +135,7 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
         }
     };
     let callback;
-    if (ticket.description.search('HasOffers Technical Support callback') != -1) {
+    if (ticket.description.search('HasOffers Technical Support callback') !== -1) {
         callback = {
             username: sliceFromString(ticket.description, 'Invitee:', 'Invitee Email:'),
             networkId: sliceFromString(ticket.description, 'Network ID', 'Sent from Calendly'),
@@ -168,7 +167,7 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
         callback = {
             username: 'null',
             networkId: 'null',
-            description: ticket.title,
+            description: 'null',
             dateTime: 'null',
             dateTimeUnixTimestamp: 'null',
             assignee: 'Not Assigned',
@@ -189,6 +188,11 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
             .catch(err => {
             res.status(200).json({ response: err });
         });
+    });
+});
+exports.zendeskNewTicketkWebhook = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        res.status(200).json({ response: 'sucess' });
     });
 });
 //# sourceMappingURL=index.js.map
