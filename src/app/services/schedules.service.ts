@@ -80,18 +80,18 @@ export class SchedulesService {
     this.afs.doc(`callbacks/${id}`).update({status: action});
   }
 
-  updateCallbackAssignee = (agent, id) => {
-    this.afs.doc(`callbacks/${id}`).update({assignee: agent.id})
-    .then(() => {
-
+  deleteCallback = (id) => {
+    this.afs.doc(`callbacks/${id}`).delete()
+    .then(res => {
+      return 'success';
+    })
+    .catch(err => {
+      return err;
     })
   }
 
-  zendeskAssignAgentToTicket() {
-    return this.http.get('https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskAssignAgentToTicket')
-  }
+  zendeskAssignAgentToTicket(assigneeEmail, ticketId) {
 
-  deleteCallback = (id) => {
-    this.afs.doc(`callbacks/${id}`).delete();
+    this.http.get(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskAssignAgentToTicket/?assignee_email=${assigneeEmail}&ticketId=${ticketId}`).subscribe().unsubscribe();
   }
 }

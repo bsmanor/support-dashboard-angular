@@ -4,6 +4,7 @@ const axios_1 = require("axios");
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const moment = require("moment");
+const cors = require('cors')({ origin: true });
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 admin.initializeApp();
 const db = admin.firestore();
@@ -11,9 +12,15 @@ const db = admin.firestore();
 const livechatRef = db.collection('webhooks').doc('livechat');
 const zendeskRef = db.collection('webhooks').doc('zendesk');
 const callbacksRef = db.collection('callbacks');
-const cors = require('cors')({ origin: true });
 const LiveChatApi = require('livechatapi').LiveChatApi;
 const liveChatApi = new LiveChatApi('manor@tune.com', '4a96a80f4cb036ec84c4585ab7a5139d');
+// Zendesk API initialization
+const Zendesk = require('zendesk-node-api');
+const zendesk = new Zendesk({
+    url: 'https://tune.zendesk.com',
+    token: 'bWFub3JAdHVuZS5jb206RnJhbmtlbCo1MA==',
+    oauth: true
+});
 const yyyymmdd = (date) => {
     const yyyy = moment(date).format('YYYY');
     const mm = moment(date).format('MM');
@@ -135,19 +142,19 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
     let callback;
     if (ticket.description.search('HasOffers Technical Support callback') !== -1) {
         callback = {
-            username: sliceFromString(ticket.description, 'Invitee:', 'Invitee Email:'),
-            networkId: sliceFromString(ticket.description, 'Network ID', 'Sent from Calendly'),
+            username: sliceFromString(ticket.description, 'Invitee:**', '**Invitee Email:'),
+            networkId: sliceFromString(ticket.description, 'Network ID**', 'Sent from Calendly'),
             description: ticket.title,
-            dateTime: sliceFromString(ticket.description, 'Event Date/Time:', '(Pacific'),
-            dateTimeUnixTimestamp: moment(sliceFromString(ticket.description, 'Event Date/Time:', '(Pacific')).format('X'),
+            dateTime: sliceFromString(ticket.description, 'Event Date/Time:**', '(Pacific'),
+            dateTimeUnixTimestamp: moment(sliceFromString(ticket.description, 'Event Date/Time:**', '(Pacific')).format('X'),
             assignee: 'Not Assigned',
             ticketId: ticket.id,
             zendeskLink: ticket.url,
             status: 'Open',
             statusMessage: 'The client is waiting for a call. No other info is needed or requested by us',
-            email: sliceFromString(ticket.description, 'Invitee Email:', 'Event Date/Time:'),
-            contactInfo: sliceFromString(ticket.description, 'Contact method (phone number, Skype id, etc.)', 'Issue Summary'),
-            issueSummary: sliceFromString(ticket.description, 'Issue Summary', 'Network ID'),
+            email: sliceFromString(ticket.description, 'Invitee Email:**', '**Event Date/Time:'),
+            contactInfo: sliceFromString(ticket.description, 'Contact method (phone number, Skype id, etc.)**', '**Issue Summary'),
+            issueSummary: sliceFromString(ticket.description, 'Issue Summary**', '**Network ID'),
             emailBody: ticket.description
         };
         // checks if the hour is am or pm and setting the hour variable acordingly
@@ -195,23 +202,20 @@ exports.zendeskNewTicketkWebhook = functions.https.onRequest((req, res) => {
     });
 });
 exports.zendeskAssignAgentToTicket = functions.https.onRequest((req, res) => {
+    const assigneeEmail = req.query.assignee_email;
+    const ticketId = req.query.ticketId;
     cors(req, res, () => {
-        // axios.get('https://jsonplaceholder.typicode.com/users')
-        // .then((users) => {
-        //   console.log(users);
-        //   res.status(200).send(users)
-        // })
-        // .catch((err) => {
-        //   res.status(200).json({response: err})
-        // })
-        axios_1.default.get('https://tune.zendesk.com/api/v2/groups.json', {
+        axios_1.default.put(`https://tune.zendesk.com/api/v2/tickets/${ticketId}.json`, {
+            "ticket": {
+                "assignee_email": assigneeEmail,
+            }
+        }, {
             headers: {
                 "Authorization": 'Basic bWFub3JAdHVuZS5jb206RnJhbmtlbCo1MA=='
-            }
+            },
         })
-            .then((users) => {
-            console.log(users);
-            res.status(200).json({ response: users.data });
+            .then((zendeskRes) => {
+            res.status(200).json({ response: `Ticket ID #${ticketId} was successfully assigned to ${assigneeEmail}` });
         })
             .catch((err) => {
             res.status(200).json({ response: err });

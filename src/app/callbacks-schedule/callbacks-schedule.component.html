@@ -4,7 +4,8 @@
     <div class="textCenter flexRow spaceBetween">
 
       <div id="placegolder" style="flex:1;"></div>
-      <mat-icon class="iconHeader" style="flex:1;left:2px;">call</mat-icon>
+      <!-- <mat-icon class="iconHeader" style="flex:1;left:2px;">call</mat-icon> -->
+      <img src="../../assets/images/zendesk.png" alt="Zendesk Callbacks" width="50px" height="50px">
       <div style="flex:1;">
         <button mat-icon-button [matMenuTriggerFor]="menu" style="float:right;">
           <mat-icon>more_vert</mat-icon>
@@ -36,7 +37,7 @@
       <img *ngIf="callback.agent" matListAvatar src={{callback.agent.picture}} alt="...">
       <h3 matLine>{{callback.username}} ({{callback.networkId}})</h3>
       <!-- <h3 matLine>{{callback.dateTime}}</h3> -->
-      <h3 matLine>{{callback.dateTimeUnixTimestamp * 1000 | date:'medium' : '+0300'}}</h3>
+      <h3 matLine>{{callback.dateTimeUnixTimestamp * 1000 | date : 'fullDate'}}, {{callback.dateTimeUnixTimestamp * 1000 | date : 'HH'}}:{{callback.dateTimeUnixTimestamp * 1000 | date : 'mm'}}</h3>
       <a href="https://{{callback.zendeskLink}}" target="_blank" mat-raised-button color="accent"># {{callback.ticketId}}</a>
       <div class="menuIcon" style="flex:1;">
 
@@ -63,7 +64,7 @@
               <span>Mark as done</span>
             </button>
     
-            <button mat-menu-item (click)="openCallabckHistoryDialog()">
+            <button mat-menu-item (click)="deleteCallback(callback.ticketId)">
               <mat-icon color="warn">delete</mat-icon>
               <span>Delete</span>
             </button>

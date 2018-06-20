@@ -35,6 +35,7 @@ export class CallbacksScheduleComponent implements OnInit {
   updateCallback = (id, action) => {
     this.schedulesService.updateCallback(id, action);
   }
+
   deleteCallback = (id) => {
     this.schedulesService.deleteCallback(id);
   }
@@ -71,14 +72,8 @@ export class CallbacksScheduleComponent implements OnInit {
     });
   }
 
-  subscribeToZendeskCallbackEvents() {
-    this.webhooksListenersService.zendeskEvent.subscribe((snap) => {
-      console.log('Zendesk event occurred');
-    });
-  }
-
-  assignAgentToCallback(agent: string, ticketId: string) {
-    this.schedulesService.updateCallbackAssignee(agent, ticketId);
+  assignAgentToCallback(agent: Agent, ticketId: string) {
+    this.schedulesService.zendeskAssignAgentToTicket(agent.email, ticketId);
   }
 
   ngOnInit() {
@@ -87,10 +82,6 @@ export class CallbacksScheduleComponent implements OnInit {
       for(let agent of snap) {
         this.agents.push(agent)
       }
-    })
-
-    this.schedulesService.zendeskAssignAgentToTicket().subscribe((snap) => {
-      console.log(snap);
     })
   }
 

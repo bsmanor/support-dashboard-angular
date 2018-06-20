@@ -4,6 +4,7 @@ import * as functions from 'firebase-functions';
 import * as moment from "moment";
 import { Callback } from './../../src/app/models/callback';
 import { CallbackTicket } from './models';
+const cors = require('cors')({origin: true});
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 admin.initializeApp();
 
@@ -14,10 +15,20 @@ const livechatRef = db.collection('webhooks').doc('livechat');
 const zendeskRef = db.collection('webhooks').doc('zendesk');
 const callbacksRef = db.collection('callbacks');
 
-const cors = require('cors')({origin: true});
 
 const LiveChatApi = require('livechatapi').LiveChatApi;
 const liveChatApi = new LiveChatApi('manor@tune.com', '4a96a80f4cb036ec84c4585ab7a5139d');
+
+
+// Zendesk API initialization
+const Zendesk = require('zendesk-node-api');
+const zendesk = new Zendesk({
+  url: 'https://tune.zendesk.com', // https://example.zendesk.com
+  token: 'bWFub3JAdHVuZS5jb206RnJhbmtlbCo1MA==', // hfkUny3vgHCcV3UfuqMFZWDrLKms4z3W2f6ftjPT,
+  oauth: true
+});
+
+
 
 const yyyymmdd = (date) => {
   const yyyy = moment(date).format('YYYY');
@@ -161,19 +172,19 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
   
   if(ticket.description.search('HasOffers Technical Support callback') !== -1) {
     callback = {
-      username: sliceFromString(ticket.description, 'Invitee:', 'Invitee Email:'),
-      networkId: sliceFromString(ticket.description, 'Network ID', 'Sent from Calendly'),
+      username: sliceFromString(ticket.description, 'Invitee:**', '**Invitee Email:'),
+      networkId: sliceFromString(ticket.description, 'Network ID**', 'Sent from Calendly'),
       description: ticket.title,
-      dateTime: sliceFromString(ticket.description, 'Event Date/Time:', '(Pacific'),
-      dateTimeUnixTimestamp: moment(sliceFromString(ticket.description, 'Event Date/Time:', '(Pacific')).format('X'),
+      dateTime: sliceFromString(ticket.description, 'Event Date/Time:**', '(Pacific'),
+      dateTimeUnixTimestamp: moment(sliceFromString(ticket.description, 'Event Date/Time:**', '(Pacific')).format('X'),
       assignee: 'Not Assigned',
       ticketId: ticket.id,
       zendeskLink: ticket.url,
       status: 'Open',
       statusMessage: 'The client is waiting for a call. No other info is needed or requested by us',
-      email: sliceFromString(ticket.description, 'Invitee Email:', 'Event Date/Time:'),
-      contactInfo: sliceFromString(ticket.description, 'Contact method (phone number, Skype id, etc.)', 'Issue Summary'),
-      issueSummary: sliceFromString(ticket.description, 'Issue Summary', 'Network ID'),
+      email: sliceFromString(ticket.description, 'Invitee Email:**', '**Event Date/Time:'),
+      contactInfo: sliceFromString(ticket.description, 'Contact method (phone number, Skype id, etc.)**', '**Issue Summary'),
+      issueSummary: sliceFromString(ticket.description, 'Issue Summary**', '**Network ID'),
       emailBody: ticket.description
     }
   
@@ -224,15 +235,22 @@ export const zendeskNewTicketkWebhook = functions.https.onRequest((req, res) => 
 })
 
 export const zendeskAssignAgentToTicket = functions.https.onRequest((req, res) => { // New ticket webhook
+  const assigneeEmail = req.query.assignee_email;
+  const ticketId = req.query.ticketId;
   cors(req, res, () => {
-    axios.get('https://tune.zendesk.com/api/v2/groups.json', { 
+    axios.put(`https://tune.zendesk.com/api/v2/tickets/${ticketId}.json`, 
+    {
+      "ticket": {
+        "assignee_email": assigneeEmail, 
+      }
+    },
+    { 
       headers: {
         "Authorization": 'Basic bWFub3JAdHVuZS5jb206RnJhbmtlbCo1MA=='
-      }
+      },
     })
-    .then((users) => {
-      console.log(users);
-      res.status(200).json({response: users.data})
+    .then((zendeskRes) => {
+      res.status(200).json({response: `Ticket ID #${ticketId} was successfully assigned to ${assigneeEmail}`})
     })
     .catch((err) => {
       res.status(200).json({response: err})
