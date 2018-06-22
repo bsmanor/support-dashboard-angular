@@ -35,6 +35,7 @@
   <mat-list *ngIf="allCallbacks">
     <mat-list-item class="callbacksList" *ngFor="let callback of allCallbacks" >
       <img *ngIf="callback.agent" matListAvatar src={{callback.agent.picture}} alt="...">
+      <img *ngIf="!callback.agent" matListAvatar src="../../assets/images/unassigned.jpg" alt="...">
       <h3 matLine>{{callback.username}} ({{callback.networkId}})</h3>
       <!-- <h3 matLine>{{callback.dateTime}}</h3> -->
       <h3 matLine>{{callback.dateTimeUnixTimestamp * 1000 | date : 'fullDate'}}, {{callback.dateTimeUnixTimestamp * 1000 | date : 'HH'}}:{{callback.dateTimeUnixTimestamp * 1000 | date : 'mm'}}</h3>

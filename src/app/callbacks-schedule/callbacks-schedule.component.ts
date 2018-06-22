@@ -43,6 +43,7 @@ export class CallbacksScheduleComponent implements OnInit {
   openCallabckHistoryDialog() {
     const dialogRef = this.dialog.open(DialogCallbacksHistoryComponent, {
       width: '500px',
+      data: {allCallbacks: this.allCallbacks}
     });
   }
 
@@ -53,14 +54,14 @@ export class CallbacksScheduleComponent implements OnInit {
   }
 
   getCallbacks() {
-    this.schedulesService.getUpcomingCallbacks(this.today, 3).subscribe(res => {
-      this.upcomingCallbacks = res;
-      for(let callback of this.upcomingCallbacks) {
-        this.agentsService.getAgent(callback.assignee).subscribe(agent => {
-          callback.agent = agent;
-        });
-      }
-    });
+    // this.schedulesService.getUpcomingCallbacks(this.today, 3).subscribe(res => {
+    //   this.upcomingCallbacks = res;
+    //   for(let callback of this.upcomingCallbacks) {
+    //     this.agentsService.getAgent(callback.assignee).subscribe(agent => {
+    //       callback.agent = agent;
+    //     });
+    //   }
+    // });
 
     this.schedulesService.getAllCallbacks().subscribe(res => {
       this.allCallbacks = res;

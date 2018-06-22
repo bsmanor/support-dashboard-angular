@@ -12,7 +12,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 })
 export class DialogCallbacksHistoryComponent implements OnInit {
 
-  callbacks: Callback[];
+  callbacks: any[];
 
   constructor(
     private schedulesService: SchedulesService,
@@ -26,16 +26,7 @@ export class DialogCallbacksHistoryComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.schedulesService.getAllCallbacks().subscribe(callbacks => {
-      console.log(callbacks);
-      this.callbacks = callbacks;
-      for(let callback of this.callbacks){
-        this.agentsService.getAgent(callback.assignee).subscribe(agent => {
-          callback.agent = agent;
-        });
-        callback.dateTime = `${moment(callback.dateTime).format('MMM')} ${moment(callback.dateTime).format('D')}`;
-      }
-    });
+    
   }
 
 }
