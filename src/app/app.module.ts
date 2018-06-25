@@ -9,12 +9,15 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
+
 // services
 import { ChatStatsService } from './services/chat-stats.service';
 import { SchedulesService } from './services/schedules.service';
 import { AgentsService } from './services/agents.service';
 import { MatDialogService } from './services/mat-dialog.service';
 import { MessagesService } from './services/messages.service';
+import { MessagingService } from './services/messaging.service';
 import { WebhooksListenersService } from './services/webhooks-listeners.service';
 // Angular-Material imports
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -108,13 +111,14 @@ const appRoutes: Routes = [
     ),
     BrowserAnimationsModule,
     MatDialogModule,
-    MatButtonModule, MatCheckboxModule,MatMenuModule,MatToolbarModule,MatChipsModule,MatDividerModule,
-    MatSidenavModule,MatCardModule,MatIconModule,MatFormFieldModule,MatInputModule,
-    MatListModule,MatTableModule,MatSelectModule,MatProgressSpinnerModule,MatTooltipModule,
+    MatButtonModule, MatCheckboxModule, MatMenuModule, MatToolbarModule, MatChipsModule, MatDividerModule,
+    MatSidenavModule, MatCardModule, MatIconModule, MatFormFieldModule, MatInputModule,
+    MatListModule, MatTableModule, MatSelectModule, MatProgressSpinnerModule, MatTooltipModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule.enablePersistence()
+    AngularFirestoreModule.enablePersistence(), AngularFireDatabaseModule
   ],
-  providers: [AgentsService, SchedulesService, AngularFireAuth, MessagesService, ChatStatsService, WebhooksListenersService
+  providers: [AgentsService, SchedulesService, AngularFireAuth, MessagesService, ChatStatsService,
+    WebhooksListenersService, MessagingService
   ],
   bootstrap: [AppComponent]
 })
