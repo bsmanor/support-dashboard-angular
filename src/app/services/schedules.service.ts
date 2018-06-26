@@ -91,7 +91,6 @@ export class SchedulesService {
   }
 
   zendeskAssignAgentToTicket(assigneeEmail, ticketId) {
-
     this.http.get(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskAssignAgentToTicket/?assignee_email=${assigneeEmail}&ticketId=${ticketId}`).subscribe().unsubscribe();
   }
 }

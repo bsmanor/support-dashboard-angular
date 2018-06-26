@@ -30,6 +30,9 @@ export class HomeComponent implements OnInit {
     this.msgService.getPermission();
     this.msgService.receiveMessage();
     this.message = this.msgService.currentMessage;
+    console.log('====================================');
+    console.log(this.message);
+    console.log('====================================');
   }
 
 }

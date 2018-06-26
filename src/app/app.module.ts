@@ -17,7 +17,6 @@ import { SchedulesService } from './services/schedules.service';
 import { AgentsService } from './services/agents.service';
 import { MatDialogService } from './services/mat-dialog.service';
 import { MessagesService } from './services/messages.service';
-import { MessagingService } from './services/messaging.service';
 import { WebhooksListenersService } from './services/webhooks-listeners.service';
 // Angular-Material imports
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -118,7 +117,7 @@ const appRoutes: Routes = [
     AngularFirestoreModule.enablePersistence(), AngularFireDatabaseModule
   ],
   providers: [AgentsService, SchedulesService, AngularFireAuth, MessagesService, ChatStatsService,
-    WebhooksListenersService, MessagingService
+    WebhooksListenersService
   ],
   bootstrap: [AppComponent]
 })
