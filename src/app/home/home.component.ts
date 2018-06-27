@@ -33,6 +33,10 @@ export class HomeComponent implements OnInit {
     console.log('====================================');
     console.log(this.message);
     console.log('====================================');
+    this.agentsService.updateAgentData('106249416191474335986', 'babu', 'data').subscribe(res => {
+      console.log('=============== Agent  =====================');
+      console.log(res);
+      console.log('====================================');})
   }
 
 }

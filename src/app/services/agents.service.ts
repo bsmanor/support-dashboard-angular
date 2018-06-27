@@ -7,16 +7,18 @@ import * as firebase from 'firebase';
 
 @Injectable()
 export class AgentsService {
-  private agentsRef: AngularFirestoreCollection<Agent>
-  agents: Observable<Agent[]>
-
+  private agentsRef: AngularFirestoreCollection<Agent>;
+  agents: Observable<Agent[]>;
+  private agentRef: AngularFirestoreDocument<Agent>;
+  agent: Observable<Agent>;
+  
   constructor(
     public afAuth: AngularFireAuth,
     private afs: AngularFirestore,
   ) 
   {
     this.agentsRef = afs.collection<Agent>('agents');
-    this.agents = this.agentsRef.valueChanges();  
+    this.agents = this.agentsRef.valueChanges();
   }
 
   getAgents = () => {
@@ -44,4 +46,16 @@ export class AgentsService {
       picture: agent.picture
     })
   }
+
+  updateAgentData(id, property, val) {
+    //this.afs.doc(`agents/${id}/${property}`).update(data);
+    const data = {[property]: val} 
+    let sender;
+    this.afs.doc(`agents/${id}/`).update(data)
+    .then( () => {
+      sender = this.afs.doc(`agents/${id}/`).valueChanges()
+    })
+    return sender;
+  }
+
 }
