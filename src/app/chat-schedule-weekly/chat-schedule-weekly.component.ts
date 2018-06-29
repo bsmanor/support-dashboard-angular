@@ -34,7 +34,7 @@ export class ChatScheduleWeeklyComponent implements OnInit {
       if(res) {
         let dailyChatRes: Element[] = JSON.parse(res.content);
         for(let row of dailyChatRes) {
-          let agent = this.agentsService.getAgent(row.agent).subscribe((agent: Agent) => {
+          let agent = this.agentsService.getAgentById(row.agent).subscribe((agent: Agent) => {
             row.agent = agent.given_name;
           })
         }

@@ -1,7 +1,9 @@
+import { Agent } from './../models/agent';
 import { MessagingService } from './../services/messaging.service';
 import { ChatStatsService } from './../services/chat-stats.service';
 import { Component, OnInit } from '@angular/core';
 import { AgentsService } from '../services/agents.service';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-home',
@@ -26,17 +28,29 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  // This functions checks if a user is logged in.
+  // If a user is logged in, it'll send it's email to the agentsService "user" setter, 
+  // which will set the current user as the global user variable (acceable via the agentsService)
+  setGlobalUser() {
+    firebase.auth().onAuthStateChanged( (user) => {
+      if (user) {
+        this.agentsService.getAgentByEmail(user.email)
+        .then((agent: Agent) => {
+          this.agentsService.user = agent;
+          console.log('==== Agents:  =======');
+          console.log(agent);
+        })
+        .catch(err => {console.log(err)})
+      }
+    })
+  }
+
   ngOnInit() {
+    this.setGlobalUser();
     this.msgService.getPermission();
     this.msgService.receiveMessage();
     this.message = this.msgService.currentMessage;
-    console.log('====================================');
     console.log(this.message);
-    console.log('====================================');
-    this.agentsService.updateAgentData('106249416191474335986', 'babu', 'data').subscribe(res => {
-      console.log('=============== Agent  =====================');
-      console.log(res);
-      console.log('====================================');})
   }
 
 }

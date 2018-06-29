@@ -66,7 +66,7 @@ export class CallbacksScheduleComponent implements OnInit {
     this.schedulesService.getAllCallbacks().subscribe(res => {
       this.allCallbacks = res;
       for(let callback of this.allCallbacks) {
-        this.agentsService.getAgent(callback.assignee).subscribe(agent => {
+        this.agentsService.getAgentById(callback.assignee).subscribe(agent => {
           callback.agent = agent;
         });
       }

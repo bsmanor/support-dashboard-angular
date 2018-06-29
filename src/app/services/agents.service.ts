@@ -7,6 +7,18 @@ import * as firebase from 'firebase';
 
 @Injectable()
 export class AgentsService {
+
+  private _user: Agent;
+  get user(): Agent {
+    return this._user
+  }
+  set user(user: Agent) {
+    this._user = user
+  }
+  get userId(): string {
+    return this._user.id
+  }
+
   private agentsRef: AngularFirestoreCollection<Agent>;
   agents: Observable<Agent[]>;
   private agentRef: AngularFirestoreDocument<Agent>;
@@ -25,15 +37,32 @@ export class AgentsService {
     return this.agents;
   }
 
-  getAgent = (id): Observable<Agent> => {
+  getAgentById = (id): Observable<Agent> => {
     let agentRef: AngularFirestoreDocument<Agent> = this.afs.doc<Agent>(`agents/${id}`);
     let agent: Observable<Agent> = agentRef.valueChanges();
     return agent; 
-
-    // let agent: Agent;
-    // let agentRef = this.afs.doc(`agents/${id}`);
-    // return agentRef.valueChanges();
   }
+  getAgentByEmail = (email) => {
+    return new Promise(((resolve, reject) => {
+    let isFound = false;
+    let tmpAgent: Agent;
+    this.getAgents().subscribe(agents => {
+      for (let agent of agents) {
+          if (agent.email === email) {
+            isFound = true;
+            //tmpAgent = agent
+            resolve(agent)
+        }
+      }
+    })
+      if (isFound) {
+        console.log('Some log');
+      } else if (!isFound) {
+        reject(`No matching users were found with address: ${email}`);
+      }
+    }))
+  }
+
 
   addAgent(agent: Agent) {
     this.afs.collection<Agent>(`agents`).doc(agent.id).set({
@@ -48,14 +77,10 @@ export class AgentsService {
   }
 
   updateAgentData(id, property, val) {
-    //this.afs.doc(`agents/${id}/${property}`).update(data);
     const data = {[property]: val} 
     let sender;
-    this.afs.doc(`agents/${id}/`).update(data)
-    .then( () => {
-      sender = this.afs.doc(`agents/${id}/`).valueChanges()
-    })
-    return sender;
+    this.afs.doc(`agents/${id}/`).update(data);
+    return this.afs.doc(`agents/${id}/`).valueChanges();
   }
 
 }

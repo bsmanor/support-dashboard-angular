@@ -27,12 +27,12 @@ export class LoginComponent implements OnInit {
   async login() {
     let user: any;
     user = await this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-            .catch(err => {
-              console.log(err);
-              this.errorMessage = err.message;
-              this.loginStatus = 1;
-    
-            })
+    .catch(err => {
+      console.log(err);
+      this.errorMessage = err.message;
+      this.loginStatus = 1;
+
+    })
     // check if the user's email is a @tune email or not.
     if(user.user.email.search(/@tune/) != -1) { 
       console.log(user);
@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     if(this.afAuth.authState) {
-    this.login()
+      this.login()
     } 
     // else {
     //   this.router.navigate(['/home'])
