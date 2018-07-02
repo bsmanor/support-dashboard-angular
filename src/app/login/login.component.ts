@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
           email: user.additionalUserInfo.profile.email,
           family_name: user.additionalUserInfo.profile.family_name,
           given_name: user.additionalUserInfo.profile.given_name,
-          id: user.additionalUserInfo.profile.id,
+          id: user.user.uid,
           locale: user.additionalUserInfo.profile.locale,
           name: user.additionalUserInfo.profile.name,
           picture: user.additionalUserInfo.profile.picture

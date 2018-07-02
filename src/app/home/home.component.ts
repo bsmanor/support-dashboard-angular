@@ -19,12 +19,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private chatStatsService: ChatStatsService,
     private msgService: MessagingService
   ) {
-    this.agentsService.setGlobalUser();
+    this.agentsService.getGlobalUser();
   }
 
   verifyGlobalUser = () => {
     if (this.agentsService.user === undefined) {
-      this.agentsService.setGlobalUser();
+      this.agentsService.getGlobalUser();
     }
   }
 
@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.msgService.getPermission();
     this.msgService.receiveMessage();
     this.message = this.msgService.currentMessage;
-    // console.log(this.message);
+    console.log(this.message);
   }
 
   ngAfterViewInit() {

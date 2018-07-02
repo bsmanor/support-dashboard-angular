@@ -1,5 +1,7 @@
+import { FcmToken } from './../models/fcm-token';
+import { NotificationMessage } from './../models/notification-message';
 import { AgentsService } from './agents.service';
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -9,16 +11,21 @@ import 'rxjs/add/operator/take';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Agent } from '../models/agent';
 
-
 @Injectable({
   providedIn: 'root'
 })
-export class MessagingService implements OnInit {
+export class MessagingService {
+
+  private fcmTokensRef: AngularFirestoreCollection<FcmToken>;
+  fcmTokens: Observable<FcmToken[]>;
 
   private agentsRef: AngularFirestoreCollection<Agent>;
   agents: Observable<Agent[]>;
+
   private userRef: AngularFirestoreDocument<Agent>;
   user: Observable<Agent>;
+
+  agent: Agent;
 
   messaging = firebase.messaging();
   currentMessage = new BehaviorSubject(null);
@@ -32,38 +39,36 @@ export class MessagingService implements OnInit {
   ) {
     this.agentsRef = this.afs.collection('agents');
     this.agents = this.agentsRef.valueChanges();
+    this.fcmTokensRef = this.afs.collection('fcmTokens');
+    this.fcmTokens = this.fcmTokensRef.valueChanges();
   }
 
   updateToken(token) {
-    this.afAuth.authState.take(1).subscribe(user => {
+    this.afAuth.authState.take(1).subscribe( async user => {
       if (!user) { return; }
-        this.user.subscribe(e => {
-          console.log(e);
-        });
-      const data = { [user.uid]: token };
-      this.db.object('fcmTokens/').update(data);
+      this.agentsService.updateAgentData(this.agent.id, 'token', token);
+      this.fcmTokensRef.doc(`fcmTokens/${this.agent.id}`).update({token: token});
     });
   }
 
-  getPermission() {
-    this.agentsService.verifyGlobalUser()
+  async getPermission() {
+    const user = await this.agentsService.user;
+    this.userRef = this.afs.doc(`agents/${await user.id}`);
+    this.user = this.userRef.valueChanges();
+    this.user.subscribe(agent => {
+      this.agent = agent;
+    });
+    this.messaging.requestPermission()
     .then(() => {
-      console.log('user verified');
-      this.user.subscribe(res => {
-        console.log(res);
-      });
-      this.messaging.requestPermission()
-      .then(() => {
-        console.log('Notification permission granted.');
-        return this.messaging.getToken();
-      })
-      .then(token => {
-        console.log(token);
-        this.updateToken(token);
-      })
-      .catch((err) => {
-        console.log('Unable to get permission to notify.', err);
-      });
+      console.log('Notification permission granted.');
+      return this.messaging.getToken();
+    })
+    .then(token => {
+      console.log(token);
+      this.updateToken(token);
+    })
+    .catch((err) => {
+      console.log('Unable to get permission to notify.', err);
     });
   }
 
@@ -73,10 +78,4 @@ export class MessagingService implements OnInit {
       this.currentMessage.next(payload);
     });
   }
-
-  ngOnInit() {
-    this.userRef = this.afs.doc(`agents/${this.agentsService.user}`);
-    this.user = this.userRef.valueChanges();
-  }
-
 }

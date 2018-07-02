@@ -8,15 +8,33 @@ import * as firebase from 'firebase';
 @Injectable()
 export class AgentsService {
 
-  private _user: Agent;
-  get user(): Agent {
-    return this._user;
+  get user(): Promise<Agent> {
+    return new Promise((resolve) => {
+      firebase.auth().onAuthStateChanged( (user) => {
+        if (user) {
+          this.getAgentByEmail(user.email)
+          .then((agent: Agent) => {
+            resolve(agent);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+        }
+      });
+    });
   }
-  set user(user: Agent) {
-    this._user = user;
-  }
-  get userId(): string {
-    return this._user.id;
+  // set user(user: Promise<Agent>) {
+  //   this.user = user;
+  // }
+  get userId(): Promise<string> {
+    return new Promise((resolve) => {
+      let userId;
+      this.user
+      .then(id => {
+        userId = id;
+      });
+      resolve(userId);
+    });
   }
 
   private agentsRef: AngularFirestoreCollection<Agent>;
@@ -28,19 +46,17 @@ export class AgentsService {
     public afAuth: AngularFireAuth,
     private afs: AngularFirestore,
   ) {
-    this.setGlobalUser();
     this.agentsRef = afs.collection<Agent>('agents');
     this.agents = this.agentsRef.valueChanges();
   }
 
-  setGlobalUser() {
-    return new Promise((resolve, reject) => {
+  getGlobalUser() {
+    return new Promise((resolve) => {
       firebase.auth().onAuthStateChanged( (user) => {
         if (user) {
           this.getAgentByEmail(user.email)
           .then((agent: Agent) => {
-            this.user = agent;
-            resolve(this.user);
+            resolve(agent);
           })
           .catch(err => {
             console.log(err);
@@ -51,9 +67,8 @@ export class AgentsService {
   }
 
   verifyGlobalUser() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.user !== undefined) {
-        console.log(this.user);
         resolve(this.user);
       } else {
         console.log('Wating for user to be set');
