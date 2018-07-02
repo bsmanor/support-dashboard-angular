@@ -1,10 +1,11 @@
+import { Agent } from './../models/agent';
 import { Component, OnInit } from '@angular/core';
 import * as firebase from 'firebase/app';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Router } from '@angular/router';
-
 import { AgentsService } from './../services/agents.service';
 import { UserGoogleProfile } from './../models/user-google-profile';
+import { reject } from 'q';
 
 
 @Component({
@@ -18,7 +19,9 @@ export class LoginComponent implements OnInit {
     private agentsService: AgentsService,
     public afAuth: AngularFireAuth,
     private router: Router
-  ) {}
+  ) {
+    this.login();
+  }
 
   loginStatus = 0; // 0: authenticating; 1: login successful; 2: login failed;
   errorMessage: string;
@@ -31,50 +34,41 @@ export class LoginComponent implements OnInit {
       console.log(err);
       this.errorMessage = err.message;
       this.loginStatus = 1;
-
-    })
+    });
     // check if the user's email is a @tune email or not.
-    if(user.user.email.search(/@tune/) != -1) { 
-      console.log(user);
+    if (user.user.email.search(/@tune/) !== -1) {
       // check if user already exists
       // if user is already signed up
-      if(!user.additionalUserInfo.isNewUser) {
-        this.router.navigate(['/home']);
+      if (!user.additionalUserInfo.isNewUser) {
+          this.router.navigate(['/home']);
       } else {
-      // if not exist, add new user to the DB
-      // 1. create the user object
-      let agent = {
-        email: user.additionalUserInfo.profile.email,
-        family_name: user.additionalUserInfo.profile.family_name,
-        given_name: user.additionalUserInfo.profile.given_name,
-        id: user.additionalUserInfo.profile.id,
-        locale: user.additionalUserInfo.profile.locale,
-        name: user.additionalUserInfo.profile.name,
-        picture: user.additionalUserInfo.profile.picture
+        // if not exist, add new user to the DB
+        // 1. create the user object
+        const agent = {
+          email: user.additionalUserInfo.profile.email,
+          family_name: user.additionalUserInfo.profile.family_name,
+          given_name: user.additionalUserInfo.profile.given_name,
+          id: user.additionalUserInfo.profile.id,
+          locale: user.additionalUserInfo.profile.locale,
+          name: user.additionalUserInfo.profile.name,
+          picture: user.additionalUserInfo.profile.picture
+        };
+        // 2. add user as new agent to DB
+        this.agentsService.addAgent(agent);
+        // 3. redirect to the home page
+        this.router.navigate(['/home']);
       }
-      this.agentsService.addAgent(agent);
-      this.router.navigate(['/home']);
-    };
-    // if user's email isn't @tune, the user's account on firebase will be deleted
+      // if user's email isn't @tune, the user's account on firebase will be deleted
     } else {
-      let currentUser = this.afAuth.auth.currentUser;
+      const currentUser = this.afAuth.auth.currentUser;
       currentUser.delete().then( res => {
-        this.errorMessage = "Oops!\n Only @tune email domains can log in. Got one?";
+        this.errorMessage = `Oops!\n Only @tune email domains can log in. Got one?`;
         this.loginStatus = 1;
       });
     }
   }
 
   ngOnInit() {
-    if(this.afAuth.authState) {
-      this.login()
-    } 
-    // else {
-    //   this.router.navigate(['/home'])
-    // }
-    // console.log('====================================');
-    console.log(this.afAuth.authState);
-    console.log('====================================');
   }
 
 }

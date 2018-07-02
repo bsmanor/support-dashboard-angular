@@ -10,27 +10,58 @@ export class AgentsService {
 
   private _user: Agent;
   get user(): Agent {
-    return this._user
+    return this._user;
   }
   set user(user: Agent) {
-    this._user = user
+    this._user = user;
   }
   get userId(): string {
-    return this._user.id
+    return this._user.id;
   }
 
   private agentsRef: AngularFirestoreCollection<Agent>;
   agents: Observable<Agent[]>;
   private agentRef: AngularFirestoreDocument<Agent>;
   agent: Observable<Agent>;
-  
+
   constructor(
     public afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-  ) 
-  {
+  ) {
+    this.setGlobalUser();
     this.agentsRef = afs.collection<Agent>('agents');
     this.agents = this.agentsRef.valueChanges();
+  }
+
+  setGlobalUser() {
+    return new Promise((resolve, reject) => {
+      firebase.auth().onAuthStateChanged( (user) => {
+        if (user) {
+          this.getAgentByEmail(user.email)
+          .then((agent: Agent) => {
+            this.user = agent;
+            resolve(this.user);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+        }
+      });
+    });
+  }
+
+  verifyGlobalUser() {
+    return new Promise((resolve, reject) => {
+      if (this.user !== undefined) {
+        console.log(this.user);
+        resolve(this.user);
+      } else {
+        console.log('Wating for user to be set');
+        setTimeout(() => {
+          this.verifyGlobalUser();
+        }, 1000);
+      }
+    });
   }
 
   getAgents = () => {
@@ -38,29 +69,25 @@ export class AgentsService {
   }
 
   getAgentById = (id): Observable<Agent> => {
-    let agentRef: AngularFirestoreDocument<Agent> = this.afs.doc<Agent>(`agents/${id}`);
-    let agent: Observable<Agent> = agentRef.valueChanges();
-    return agent; 
+    const agentRef: AngularFirestoreDocument<Agent> = this.afs.doc<Agent>(`agents/${id}`);
+    const agent: Observable<Agent> = agentRef.valueChanges();
+    return agent;
   }
   getAgentByEmail = (email) => {
-    return new Promise(((resolve, reject) => {
-    let isFound = false;
-    let tmpAgent: Agent;
-    this.getAgents().subscribe(agents => {
-      for (let agent of agents) {
+    return new Promise((resolve, reject) => {
+      this.getAgents().subscribe(agents => {
+        let isFound = false;
+        for (const agent of agents) {
           if (agent.email === email) {
             isFound = true;
-            //tmpAgent = agent
-            resolve(agent)
+            resolve(agent);
+          }
         }
-      }
-    })
-      if (isFound) {
-        console.log('Some log');
-      } else if (!isFound) {
-        reject(`No matching users were found with address: ${email}`);
-      }
-    }))
+        if (!isFound) {
+          reject(`No matching users were found with address: ${email}`);
+        }
+      });
+    });
   }
 
 
@@ -73,12 +100,11 @@ export class AgentsService {
       locale: agent.locale,
       name: agent.name,
       picture: agent.picture
-    })
+    });
   }
 
   updateAgentData(id, property, val) {
-    const data = {[property]: val} 
-    let sender;
+    const data = {[property]: val};
     this.afs.doc(`agents/${id}/`).update(data);
     return this.afs.doc(`agents/${id}/`).valueChanges();
   }

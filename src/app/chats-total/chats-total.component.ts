@@ -12,7 +12,7 @@ import { WebhooksListenersService } from './../services/webhooks-listeners.servi
 export class ChatsTotalComponent implements OnInit {
 
   totalChats: number;
-  showTotalsBar = false;  
+  showTotalsBar = false;
 
   constructor(
     private chatStatsService: ChatStatsService,
@@ -21,24 +21,24 @@ export class ChatsTotalComponent implements OnInit {
 
   subscribeToLivechatEvents() {
     this.webhooksListenersService.livechatEvents().subscribe((res) => {
-      let event = res.event;
-      if(event === 2) {
+      const event = res.event;
+      if (event === 2) {
         this.getLiveChatDailyTotal();
       }
-    })
+    });
   }
-    
+
   getLiveChatDailyTotal() {
-    let date = this.chatStatsService.yyyymmdd(new Date());
+    const date = this.chatStatsService.yyyymmdd(new Date());
     this.chatStatsService.getLiveChatDailyTotal().subscribe((res) => {
       this.totalChats = res['response'][date].chats;
-    })  
+    });
   }
 
   toggleShowTotalsBar() {
     this.showTotalsBar = !this.showTotalsBar;
   }
-  
+
   ngOnInit() {
     this.getLiveChatDailyTotal();
     this.subscribeToLivechatEvents();

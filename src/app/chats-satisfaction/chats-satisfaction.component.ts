@@ -1,3 +1,4 @@
+import { ChatSatisfaction } from './../models/chat-satisfaction';
 import { Component, OnInit } from '@angular/core';
 import { ChatStats } from './../models/chat-stats';
 import { ChatStatsService } from './../services/chat-stats.service';
@@ -21,18 +22,19 @@ export class ChatsSatisfactionComponent implements OnInit {
 
   subscribeToLivechatEvents() {
     this.webhooksListenersService.livechatEvents().subscribe((res) => {
-      let event = res.event;
-      if(event === 2) {
+      const event = res.event;
+      if (event === 2) {
         this.getLiveChatDailyRatings();
       }
-    })
+    });
   }
 
   getLiveChatDailyRatings() {
     this.chatStatsService.getLiveChatDailyRatings().subscribe((res) => {
-      this.ratedGood = res['response'][this.chatStatsService.yyyymmdd(new Date())]['good']
-      this.ratedBad = res['response'][this.chatStatsService.yyyymmdd(new Date())]['bad']      
-    })
+      const date = this.chatStatsService.yyyymmdd(new Date());
+      this.ratedGood = res['response'][date]['good'];
+      this.ratedBad = res['response'][date]['bad'];
+    });
   }
 
   ngOnInit() {
