@@ -37,6 +37,47 @@ const yyyymmdd = (date) => {
   return `${yyyy}-${mm}-${dd}`;
 }
 
+// Cloud messaging initialization
+
+// 1. Initialize the messages listener
+exports.fcmSend = functions.firestore.document(`messages/global`).onUpdate(event => {
+  const message = event.after.data().message;
+  console.log(message);
+  const payload = {
+    notification: {
+      title: message.title,
+      body: message.body,
+      icon: message.icon
+    }
+  };
+
+  const token = 'fUGIRrBMCTo:APA91bHFTQ4C-7rP9_QuNjHSuHDG88g9KkfYXU3pH0AYs_ZurfuTx-U5BzIphrBj2y7HzAw7EM-KjildS7SL3FoQ6oh-bIWjbolkFCkEXW8OxoLhpYNEuHGJ_pels-cX9HnJCEpppeS0';
+
+  admin.messaging().sendToDevice(token, payload)
+  .then(res => {
+    console.log("Sent Successfully", res);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+
+  // // 2. get the user's token to send notification to 
+  // admin.database().ref(`/fcmTokens/${message.distribution}`)
+  //   .once('value')
+  //   .then(token => token.val() )
+  //   .then(userFcmToken => {
+  //     // 3. send notification
+  //     return admin.messaging().sendToDevice(userFcmToken, payload)
+  //   })
+  //   .then(res => {
+  //     console.log("Sent Successfully", res);
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //   });
+
+});
+
 // -------  Live Chat REST API ------------
 
 

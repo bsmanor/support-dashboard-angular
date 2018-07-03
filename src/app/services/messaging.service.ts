@@ -47,17 +47,12 @@ export class MessagingService {
     this.afAuth.authState.take(1).subscribe( async user => {
       if (!user) { return; }
       this.agentsService.updateAgentData(this.agent.id, 'token', token);
-      this.fcmTokensRef.doc(`fcmTokens/${this.agent.id}`).update({token: token});
+      this.fcmTokensRef.doc(this.agent.id).set({token: token});
     });
   }
 
   async getPermission() {
-    const user = await this.agentsService.user;
-    this.userRef = this.afs.doc(`agents/${await user.id}`);
-    this.user = this.userRef.valueChanges();
-    this.user.subscribe(agent => {
-      this.agent = agent;
-    });
+    this.agent = await this.agentsService.user;
     this.messaging.requestPermission()
     .then(() => {
       console.log('Notification permission granted.');
