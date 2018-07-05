@@ -54,18 +54,20 @@ export class CallbacksScheduleComponent implements OnInit {
   }
 
   getCallbacks() {
-    // this.schedulesService.getUpcomingCallbacks(this.today, 3).subscribe(res => {
-    //   this.upcomingCallbacks = res;
-    //   for(let callback of this.upcomingCallbacks) {
-    //     this.agentsService.getAgent(callback.assignee).subscribe(agent => {
-    //       callback.agent = agent;
-    //     });
-    //   }
-    // });
-
     this.schedulesService.getAllCallbacks().subscribe(res => {
       this.allCallbacks = res;
-      for(let callback of this.allCallbacks) {
+      for (const callback of this.allCallbacks) {
+        this.agentsService.getAgentById(callback.assignee).subscribe(agent => {
+          callback.agent = agent;
+        });
+      }
+    });
+  }
+
+  getFutureCallbacks() {
+    this.schedulesService.getFutureCallbacks().subscribe(res => {
+      this.upcomingCallbacks = res;
+      for (const callback of this.upcomingCallbacks) {
         this.agentsService.getAgentById(callback.assignee).subscribe(agent => {
           callback.agent = agent;
         });
@@ -78,12 +80,8 @@ export class CallbacksScheduleComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getFutureCallbacks();
     this.getCallbacks();
-    this.agentsService.getAgents().subscribe(snap => {
-      for(let agent of snap) {
-        this.agents.push(agent)
-      }
-    })
   }
 
 }

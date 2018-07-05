@@ -1,3 +1,4 @@
+import { NotificationMessage } from './../models/notification-message';
 import { Agent } from './../models/agent';
 import { MessagingService } from './../services/messaging.service';
 import { ChatStatsService } from './../services/chat-stats.service';
@@ -20,6 +21,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private msgService: MessagingService
   ) {
     this.agentsService.getGlobalUser();
+  }
+
+  sendMessage() {
+    console.log('clicked');
+    const message: NotificationMessage = {
+      title: 'Test Message',
+      body: 'This is the notification body',
+      icon: 'https://firebasestorage.googleapis.com/v0/b/hasoffers-support-dashboard.appspot.com/o/images%2FiconCallback.png?alt=media&token=7018b32c-0000-4cec-894c-0b6185b47b5c',
+      topic: 'callbacks'
+    };
+    this.msgService.sendMessage(message);
   }
 
   verifyGlobalUser = () => {

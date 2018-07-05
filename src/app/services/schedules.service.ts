@@ -10,7 +10,8 @@ import * as firebase from 'firebase';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import axios from 'axios';
-
+import { DateAdapter } from '@angular/material';
+import * as moment from 'moment';
 
 interface Date {
   year: string;
@@ -25,6 +26,11 @@ interface Item {
 @Injectable()
 export class SchedulesService {
 
+  get callbacSchedulekStartDate(): string {
+    const date = `${moment().format('YYYY')}-${moment().format('MM')}-${moment().format('DD')}`;
+    return moment(date).format('X');
+  }
+
   private chatsRef: AngularFirestoreCollection<ChatSchedule>;
   chats: Observable<ChatSchedule[]>;
   getDailyChat: Function;
@@ -32,15 +38,24 @@ export class SchedulesService {
   private callbacksRef: AngularFirestoreCollection<Callback>;
   callbacks: Observable<Callback[]>;
 
-  constructor( 
+  private futureCallbacksRef: AngularFirestoreCollection<Callback>;
+  futureCallbacks: Observable<Callback[]>;
+
+  constructor(
     private afs: AngularFirestore,
     private http: HttpClient
   ) {
     this.chatsRef = afs.collection<ChatSchedule>('chats');
     this.chats = this.chatsRef.valueChanges();
 
-    this.callbacksRef = afs.collection<Callback>('callbacks');
+    this.callbacksRef = afs.collection<Callback>('callbacks', ref => ref.orderBy('dateTimeUnixTimestamp'));
     this.callbacks = this.callbacksRef.valueChanges();
+
+    this.futureCallbacksRef = afs.collection<Callback>('callbacks',
+      ref => ref.where('dateTimeUnixTimestamp', '>=', this.callbacSchedulekStartDate)
+                .orderBy('dateTimeUnixTimestamp')
+    );
+    this.futureCallbacks = this.futureCallbacksRef.valueChanges();
   }
 
   // ----------      Chat Related -----------------------
@@ -72,12 +87,18 @@ export class SchedulesService {
     return this.callbacks;
   }
 
-  getUpcomingCallbacks = (date: string, limit: number) => {
-    return this.afs.collection<Callback>('callbacks', ref => ref.where('date', '==', date)).valueChanges();
+  getFutureCallbacks() {
+    return this.futureCallbacks;
   }
 
   updateCallback = (id, action) => {
-    this.afs.doc(`callbacks/${id}`).update({status: action});
+    this.afs.doc(`callbacks/${id}`).update({status: action})
+    .then(res => {
+      return 'success';
+    })
+    .catch(err => {
+      return err;
+    });
   }
 
   deleteCallback = (id) => {
@@ -87,10 +108,10 @@ export class SchedulesService {
     })
     .catch(err => {
       return err;
-    })
+    });
   }
 
   zendeskAssignAgentToTicket(assigneeEmail, ticketId) {
-    this.http.get(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskAssignAgentToTicket/?assignee_email=${assigneeEmail}&ticketId=${ticketId}`).subscribe().unsubscribe();
+    this.http.get(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskAssignAgentToTicket/?assignee_email=${assigneeEmail}&ticketId=${ticketId}`).subscribe();
   }
 }

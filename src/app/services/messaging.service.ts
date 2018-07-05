@@ -44,10 +44,14 @@ export class MessagingService {
   }
 
   updateToken(token) {
+    const notificationTopics = ['callbacks'];
     this.afAuth.authState.take(1).subscribe( async user => {
       if (!user) { return; }
       this.agentsService.updateAgentData(this.agent.id, 'token', token);
       this.fcmTokensRef.doc(this.agent.id).set({token: token});
+      for (const topic of notificationTopics) {
+        fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/subscribeToTopic/?token=${token}&topic=${topic}`);
+      }
     });
   }
 
@@ -71,6 +75,16 @@ export class MessagingService {
       this.messaging.onMessage((payload) => {
       console.log('Message received. ', payload);
       this.currentMessage.next(payload);
+    });
+  }
+
+  sendMessage(message: NotificationMessage) {
+    this.afs.doc('messages/global').set({message: message})
+    .then(() => {
+      console.log('message updated');
+    })
+    .catch(err => {
+      console.log(err);
     });
   }
 }

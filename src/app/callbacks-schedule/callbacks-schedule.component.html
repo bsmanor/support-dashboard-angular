@@ -33,7 +33,7 @@
   </div>
 
   <mat-list *ngIf="allCallbacks">
-    <mat-list-item class="callbacksList" *ngFor="let callback of allCallbacks" >
+    <mat-list-item class="callbacksList" *ngFor="let callback of upcomingCallbacks" >
       <img *ngIf="callback.agent" matListAvatar src={{callback.agent.picture}} alt="...">
       <img *ngIf="!callback.agent" matListAvatar src="../../assets/images/unassigned.jpg" alt="...">
       <h3 matLine>{{callback.username}} ({{callback.networkId}})</h3>

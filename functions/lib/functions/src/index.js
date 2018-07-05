@@ -28,8 +28,17 @@ const yyyymmdd = (date) => {
     return `${yyyy}-${mm}-${dd}`;
 };
 // Cloud messaging initialization
+// Add user's token to a messaging group
+exports.subscribeToTopic = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        const token = req.query.token;
+        const topic = req.query.topic;
+        admin.messaging().subscribeToTopic(token, topic);
+    });
+});
+// Sending push notifications
 // 1. Initialize the messages listener
-exports.fcmSend = functions.firestore.document(`messages/global`).onUpdate(event => {
+exports.fcmSend = functions.firestore.document(`messages/global`).onWrite(event => {
     const message = event.after.data().message;
     console.log(message);
     const payload = {
@@ -39,28 +48,25 @@ exports.fcmSend = functions.firestore.document(`messages/global`).onUpdate(event
             icon: message.icon
         }
     };
-    const token = 'fUGIRrBMCTo:APA91bHFTQ4C-7rP9_QuNjHSuHDG88g9KkfYXU3pH0AYs_ZurfuTx-U5BzIphrBj2y7HzAw7EM-KjildS7SL3FoQ6oh-bIWjbolkFCkEXW8OxoLhpYNEuHGJ_pels-cX9HnJCEpppeS0';
-    admin.messaging().sendToDevice(token, payload)
-        .then(res => {
-        console.log("Sent Successfully", res);
-    })
-        .catch(err => {
-        console.log(err);
-    });
-    // // 2. get the user's token to send notification to 
-    // admin.database().ref(`/fcmTokens/${message.distribution}`)
-    //   .once('value')
-    //   .then(token => token.val() )
-    //   .then(userFcmToken => {
-    //     // 3. send notification
-    //     return admin.messaging().sendToDevice(userFcmToken, payload)
-    //   })
-    //   .then(res => {
-    //     console.log("Sent Successfully", res);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
+    // 2. Check if a message is address for a group (by topic) or to a specific agent
+    if (message.topic) {
+        admin.messaging().sendToTopic(message.topic, payload)
+            .then(res => {
+            console.log("Sent Successfully", res);
+        })
+            .catch(err => {
+            console.log(err);
+        });
+    }
+    else if (message.agent) {
+        admin.messaging().sendToDevice(message.agent, payload)
+            .then(res => {
+            console.log("Sent Successfully", res);
+        })
+            .catch(err => {
+            console.log(err);
+        });
+    }
 });
 // -------  Live Chat REST API ------------
 exports.liveChatQueuedVisitorsReport = functions.https.onRequest((req, res) => {
@@ -107,7 +113,7 @@ exports.liveChatAgentsStatus = functions.https.onRequest((req, res) => {
     });
 });
 exports.liveChatAgentStatus = functions.https.onRequest((req, res) => {
-    let login = req.query.login;
+    const login = req.query.login;
     cors(req, res, () => {
         liveChatApi.agents.get(login, (data) => {
             console.log(data);
@@ -151,6 +157,8 @@ exports.liveChatVisitorQueuedWebhook = functions.https.onRequest((req, res) => {
 // --------- !LiveChat REST API ---------------
 // --------- Zendesk REST API ---------------
 exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
+    // This end point listens to new callbacks sent by Zendesk
+    // The HTTP request from Zendesk will contain the Zendesk ticket's url, id, description and title
     const params = req.query.params;
     const ticket = {
         url: req.query.ticket_url,
@@ -159,6 +167,8 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
         title: req.query.title
     };
     const sliceFromString = (myString, startsWith, endsWith) => {
+        // This function will return the content in-between two specified strings in a text
+        // Will be used afterwards for getting the different data sections of the ticket's discription
         const start = myString.indexOf(startsWith) + startsWith.length;
         let end;
         if (myString.indexOf(endsWith) !== -1) { // Checks that the end string does exist, otherwise, will add + 1 to the end length. 
@@ -175,7 +185,9 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
         }
     };
     let callback;
+    // Check if the received ticket is indeed a callback ticket
     if (ticket.description.search('HasOffers Technical Support callback') !== -1) {
+        // Create the callback object
         callback = {
             username: sliceFromString(ticket.description, 'Invitee:**', '**Invitee Email:'),
             networkId: sliceFromString(ticket.description, 'Network ID**', 'Sent from Calendly'),
@@ -222,8 +234,20 @@ exports.zendeskNewCallbackWebhook = functions.https.onRequest((req, res) => {
         };
     }
     cors(req, res, () => {
+        // Add the new callback to the DB 'callbacks' callection
         callbacksRef.doc(ticket.id).set(callback)
             .then(snap => {
+            // Create a message object and add to the DB messages collection in order to send push nitification for the new callback
+            const message = {
+                message: {
+                    title: `New callback request from ${callback.networkId} network`,
+                    body: `Scheduled to ${callback.dateTime} \nRequested by ${callback.username}`,
+                    icon: 'https://firebasestorage.googleapis.com/v0/b/hasoffers-support-dashboard.appspot.com/o/images%2FiconCallback.png?alt=media&token=7018b32c-0000-4cec-894c-0b6185b47b5c',
+                    topic: 'callbacks'
+                }
+            };
+            // Send push notification
+            admin.firestore().doc('messages/global').set(message);
             res.status(200).json({ response: ticket });
         })
             .catch(err => {
@@ -237,6 +261,7 @@ exports.zendeskNewTicketkWebhook = functions.https.onRequest((req, res) => {
     });
 });
 exports.zendeskAssignAgentToTicket = functions.https.onRequest((req, res) => {
+    // Update assignee on Zendesk when updated via the support interface 
     const assigneeEmail = req.query.assignee_email;
     const ticketId = req.query.ticketId;
     cors(req, res, () => {
@@ -251,6 +276,20 @@ exports.zendeskAssignAgentToTicket = functions.https.onRequest((req, res) => {
         })
             .then((zendeskRes) => {
             res.status(200).json({ response: `Ticket ID #${ticketId} was successfully assigned to ${assigneeEmail}` });
+        })
+            .catch((err) => {
+            res.status(200).json({ response: err });
+        });
+    });
+});
+exports.zendeskAgentAssignedToTicket = functions.https.onRequest((req, res) => {
+    // Listens to when a ticket is assigned to an agent on Zendesk, and updates the same on the DB.
+    cors(req, res, () => {
+        const ticketId = req.query.ticketId;
+        const assigneeEmail = req.query.assignee_email;
+        admin.firestore().doc(`callbacks/${ticketId}`).update({ assignee: assigneeEmail })
+            .then((zendeskRes) => {
+            res.status(200).json({ response: `success` });
         })
             .catch((err) => {
             res.status(200).json({ response: err });

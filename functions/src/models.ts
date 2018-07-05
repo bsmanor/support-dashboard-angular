@@ -6,11 +6,9 @@ export interface CallbackTicket {
 }
 
 export interface NotificationMessage {
-  notification: Message;
-}
-
-export interface Message {
   title: string;
   body: string;
   icon: string;
+  topic?: string;
+  agent?: string;
 }
