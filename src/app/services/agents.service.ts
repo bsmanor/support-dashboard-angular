@@ -23,9 +23,7 @@ export class AgentsService {
       });
     });
   }
-  // set user(user: Promise<Agent>) {
-  //   this.user = user;
-  // }
+
   get userId(): Promise<string> {
     return new Promise((resolve) => {
       let userId;
@@ -35,6 +33,10 @@ export class AgentsService {
       });
       resolve(userId);
     });
+  }
+
+  get allAgents(): Observable<Agent[]> {
+      return this.agents;
   }
 
   private agentsRef: AngularFirestoreCollection<Agent>;

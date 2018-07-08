@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { WebhooksListenersService } from './../services/webhooks-listeners.service';
 import { SettingsCallbacksComponent } from './../settings-callbacks/settings-callbacks.component';
 import { Agent } from './../models/agent';
@@ -19,14 +20,18 @@ export class CallbacksScheduleComponent implements OnInit {
   allCallbacks: Callback[];
   upcomingCallbacks: Callback[];
   today = `${moment().format('YYYY')}-${moment().format('MM')}-${moment().format('DD')}`.toString();
-  agents: Agent[] = [];
+  agents: Agent[];
 
   constructor(
     private schedulesService: SchedulesService,
     private agentsService: AgentsService,
     private webhooksListenersService: WebhooksListenersService,
     public dialog: MatDialog
-  ) {}
+  ) {
+    this.agentsService.allAgents.subscribe(agents => {
+      this.agents = agents;
+    });
+  }
 
 
   hovered(listItem) {
@@ -41,8 +46,9 @@ export class CallbacksScheduleComponent implements OnInit {
   }
 
   openCallabckHistoryDialog() {
-    const dialogRef = this.dialog.open(DialogCallbacksHistoryComponent, {
+    this.dialog.open(DialogCallbacksHistoryComponent, {
       width: '500px',
+      height: '600px',
       data: {allCallbacks: this.allCallbacks}
     });
   }
@@ -68,15 +74,17 @@ export class CallbacksScheduleComponent implements OnInit {
     this.schedulesService.getFutureCallbacks().subscribe(res => {
       this.upcomingCallbacks = res;
       for (const callback of this.upcomingCallbacks) {
-        this.agentsService.getAgentById(callback.assignee).subscribe(agent => {
-          callback.agent = agent;
-        });
+        if (callback.assignee !== 'Not Assigned') {
+          this.agentsService.getAgentByEmail(callback.assignee).then(async (agent: Agent) => {
+            callback.agent = await agent;
+          });
+        }
       }
     });
   }
 
   assignAgentToCallback(agent: Agent, ticketId: string) {
-    this.schedulesService.zendeskAssignAgentToTicket(agent.email, ticketId);
+    this.schedulesService.zendeskAssignAgentToTicket(agent, ticketId);
   }
 
   ngOnInit() {

@@ -26,7 +26,7 @@ export class DialogCallbacksHistoryComponent implements OnInit {
   }
 
   ngOnInit() {
-    
+
   }
 
 }

@@ -27,6 +27,7 @@ const yyyymmdd = (date) => {
     const dd = moment(date).format('DD');
     return `${yyyy}-${mm}-${dd}`;
 };
+// ------------------------- Cloud Messaging --------------------------------
 // Cloud messaging initialization
 // Add user's token to a messaging group
 exports.subscribeToTopic = functions.https.onRequest((req, res) => {
@@ -48,7 +49,7 @@ exports.fcmSend = functions.firestore.document(`messages/global`).onWrite(event 
             icon: message.icon
         }
     };
-    // 2. Check if a message is address for a group (by topic) or to a specific agent
+    // 2. Check if a message is addressed for a group (by topic) or to a specific agent
     if (message.topic) {
         admin.messaging().sendToTopic(message.topic, payload)
             .then(res => {
@@ -285,8 +286,12 @@ exports.zendeskAssignAgentToTicket = functions.https.onRequest((req, res) => {
 exports.zendeskAgentAssignedToTicket = functions.https.onRequest((req, res) => {
     // Listens to when a ticket is assigned to an agent on Zendesk, and updates the same on the DB.
     cors(req, res, () => {
+        console.log(`end point notified`);
         const ticketId = req.query.ticketId;
         const assigneeEmail = req.query.assignee_email;
+        console.log(`With the following data: `);
+        console.log(`ticket ID: ${ticketId}`);
+        console.log(`email: ${assigneeEmail}`);
         admin.firestore().doc(`callbacks/${ticketId}`).update({ assignee: assigneeEmail })
             .then((zendeskRes) => {
             res.status(200).json({ response: `success` });

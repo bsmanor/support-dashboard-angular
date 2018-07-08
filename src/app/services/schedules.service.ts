@@ -1,3 +1,5 @@
+import { Agent } from './../models/agent';
+import { AgentsService } from './agents.service';
 import { Callback } from './../models/callback';
 import { Element } from './../chat-schedule/chat-schedule.component';
 import { ChatSchedule } from './../models/chat-schedule';
@@ -42,6 +44,7 @@ export class SchedulesService {
   futureCallbacks: Observable<Callback[]>;
 
   constructor(
+    private agentsService: AgentsService,
     private afs: AngularFirestore,
     private http: HttpClient
   ) {
@@ -111,7 +114,13 @@ export class SchedulesService {
     });
   }
 
-  zendeskAssignAgentToTicket(assigneeEmail, ticketId) {
-    this.http.get(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskAssignAgentToTicket/?assignee_email=${assigneeEmail}&ticketId=${ticketId}`).subscribe();
+  zendeskAssignAgentToTicket(agent: Agent, ticketId) {
+    // 1. Send a get request to cloud functions that will send an API request to Zendesl API for assigning the ticket ID to the agent's email 
+    this.http.get(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskAssignAgentToTicket/?assignee_email=${agent.email}&ticketId=${ticketId}`);
+    // 2. Update DB. Set add the agent pbject and assignee email to the callback Ref.
+    this.callbacksRef.doc(ticketId).update({
+      agent: agent,
+      assignee: agent.email
+    });
   }
 }
