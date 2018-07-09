@@ -36,6 +36,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 // Importing components
 import { AppComponent } from './app.component';
@@ -59,6 +60,7 @@ import { SettingsCallbacksComponent } from './settings-callbacks/settings-callba
 import { DialogChatMessageComponent } from './dialog-chat-message/dialog-chat-message.component';
 import { DialogCallbacksHistoryComponent } from './dialog-callbacks-history/dialog-callbacks-history.component';
 import { ChatScheduleWeeklyComponent } from './chat-schedule-weekly/chat-schedule-weekly.component';
+import { SnackbarComponent } from './snackbar/snackbar.component';
 // Importing pipes
 import { LimitTextPipe } from './pipes/limit-text.pipe';
 
@@ -97,7 +99,8 @@ const appRoutes: Routes = [
     DialogCallbacksHistoryComponent,
     ChatScheduleWeeklyComponent,
     DialogChatMessageComponent,
-    LimitTextPipe
+    LimitTextPipe,
+    SnackbarComponent
   ],
   imports: [
     BrowserModule,
@@ -112,13 +115,14 @@ const appRoutes: Routes = [
     MatDialogModule,
     MatButtonModule, MatCheckboxModule, MatMenuModule, MatToolbarModule, MatChipsModule, MatDividerModule,
     MatSidenavModule, MatCardModule, MatIconModule, MatFormFieldModule, MatInputModule,
-    MatListModule, MatTableModule, MatSelectModule, MatProgressSpinnerModule, MatTooltipModule,
+    MatListModule, MatTableModule, MatSelectModule, MatProgressSpinnerModule, MatTooltipModule, MatSnackBarModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence(), AngularFireDatabaseModule
   ],
   providers: [AgentsService, SchedulesService, AngularFireAuth, MessagesService, ChatStatsService,
     WebhooksListenersService
   ],
+  entryComponents: [SnackbarComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

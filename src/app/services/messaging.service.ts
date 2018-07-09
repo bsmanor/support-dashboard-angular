@@ -16,21 +16,24 @@ import { Agent } from '../models/agent';
 })
 export class MessagingService {
 
+  private snackBarTrigger = new BehaviorSubject<any>('');
+  snackBarTriggerRef = this.snackBarTrigger.asObservable();
+  
   private fcmTokensRef: AngularFirestoreCollection<FcmToken>;
   fcmTokens: Observable<FcmToken[]>;
-
+  
   private agentsRef: AngularFirestoreCollection<Agent>;
   agents: Observable<Agent[]>;
-
+  
   private userRef: AngularFirestoreDocument<Agent>;
   user: Observable<Agent>;
-
+  
   agent: Agent;
-
+  
   messaging = firebase.messaging();
   currentMessage = new BehaviorSubject(null);
-
-
+  
+  
   constructor(
     private agentsService: AgentsService,
     private db: AngularFireDatabase,
@@ -72,9 +75,11 @@ export class MessagingService {
   }
 
   receiveMessage() {
-      this.messaging.onMessage((payload) => {
+    this.messaging.onMessage((payload) => {
       console.log('Message received. ', payload);
       this.currentMessage.next(payload);
+      // This is an additional setup for initializing snackbar message in the platform each time a new message is received.
+      this.snackBarTrigger.next(payload);
     });
   }
 

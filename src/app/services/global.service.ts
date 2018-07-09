@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 })
 export class GlobalService {
 
-  private mq = new BehaviorSubject<boolean>(window.matchMedia('(min-width:701px)').matches);
+  private mq = new BehaviorSubject<boolean>(true);
   mqRef = this.mq.asObservable();
   private desktop: MediaQueryList = window.matchMedia('(min-width:701px)');
 
@@ -16,8 +16,8 @@ export class GlobalService {
     this.mqListener(this.desktop);
   }
 
-  mqListener(mq: MediaQueryList) {
-    this.mq.next(mq.matches);
+  mqListener(mediaQuery: MediaQueryList) {
+    this.mq.next(mediaQuery.matches);
   }
 
 }
