@@ -114,6 +114,14 @@ export class SchedulesService {
     });
   }
 
+  updateHours() {
+    // this.afs.collection('callbacks').valueChanges().subscribe((snap: Callback[]) => {
+    //   for (let callback of snap) {
+    //     this.afs.doc(`callbacks/${callback.ticketId}`).update({dateTimeUnixTimestamp: moment(callback.dateTimeUnixTimestamp).subtract(4, 'hours').format('X')})
+    //   }
+    // })
+  }
+
   zendeskAssignAgentToTicket(agent: Agent, ticketId) {
     // 1. Send a get request to cloud functions that will send an API request to Zendesl API for assigning the ticket ID to the agent's email 
     this.http.get(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskAssignAgentToTicket/?assignee_email=${agent.email}&ticketId=${ticketId}`);

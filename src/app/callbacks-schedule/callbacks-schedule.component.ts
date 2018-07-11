@@ -33,6 +33,9 @@ export class CallbacksScheduleComponent implements OnInit {
     });
   }
 
+  updateHours() {
+    this.schedulesService.updateHours();
+  }  
 
   hovered(listItem) {
     console.log(listItem);

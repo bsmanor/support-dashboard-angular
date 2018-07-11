@@ -1,3 +1,4 @@
+import { ReceivedCloudMessaging } from './../models/received-cloud-messaging';
 import { SnackbarComponent } from './../snackbar/snackbar.component';
 import { NotificationMessage } from './../models/notification-message';
 import { Agent } from './../models/agent';
@@ -7,7 +8,6 @@ import { Component, OnInit } from '@angular/core';
 import { AgentsService } from '../services/agents.service';
 import * as firebase from 'firebase';
 import {MatSnackBar} from '@angular/material';
-
 
 @Component({
   selector: 'app-home',
@@ -67,11 +67,11 @@ export class HomeComponent implements OnInit {
     this.msgService.getPermission();
     this.msgService.receiveMessage();
     this.message = this.msgService.currentMessage;
-    this.msgService.currentMessage.subscribe(message => {
+    this.msgService.currentMessage.subscribe((message: ReceivedCloudMessaging) => {
       if (message) {
-        this.openSnackBar(message)
+        this.openSnackBar(message.notification.title);
       }
-    })
+    });
   }
 
 

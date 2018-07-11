@@ -226,7 +226,7 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
       networkId: sliceFromString(ticket.description, 'Network ID**', 'Sent from Calendly'),
       description: ticket.title,
       dateTime: sliceFromString(ticket.description, 'Event Date/Time:**', '(Pacific'),
-      dateTimeUnixTimestamp: moment(sliceFromString(ticket.description, 'Event Date/Time:**', '(Pacific')).format('X'),
+      dateTimeUnixTimestamp: moment(sliceFromString(ticket.description, 'Event Date/Time:**', '(Pacific')).add(7, 'hours').format('X'),
       assignee: 'Not Assigned',
       ticketId: ticket.id,
       zendeskLink: ticket.url,
