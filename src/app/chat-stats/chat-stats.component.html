@@ -5,10 +5,23 @@
       <span class="dot"></span>
       <span class="dot"></span>
     </div>
-  <div class="flexRow spaceAround headerText">
-    <app-chats-total></app-chats-total>
-    <app-chats-satisfaction></app-chats-satisfaction>
-    <app-chats-online></app-chats-online>
-    <app-chats-queued></app-chats-queued>
+  <div
+    fxHide fxShow.gt-sm
+    fxLayout="row wrap" 
+    fxLayoutGap="20px"
+    fxLayoutAlign="space-between"
+  >
+    <app-chats-total fxFlex="20%"></app-chats-total>
+    <app-chats-satisfaction fxFlex="20%"></app-chats-satisfaction>
+    <app-chats-online fxFlex="20%"></app-chats-online>
+    <app-chats-queued fxFlex="20%"></app-chats-queued>
   </div>
+
+  <mat-tab-group fxHide.gt-sm>
+    <mat-tab label="Total"><app-chats-total></app-chats-total></mat-tab>
+    <mat-tab label="Satisfaction"><app-chats-satisfaction></app-chats-satisfaction></mat-tab>
+    <mat-tab label="Online"><app-chats-online></app-chats-online></mat-tab>
+    <mat-tab label="Queued"><app-chats-queued></app-chats-queued></mat-tab>
+  </mat-tab-group>
+
 </mat-card>

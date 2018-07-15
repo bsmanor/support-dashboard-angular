@@ -37,7 +37,8 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-
+import { FlexLayoutModule } from '@angular/flex-layout';
+import {MatTabsModule} from '@angular/material/tabs';
 // Importing components
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -63,6 +64,7 @@ import { ChatScheduleWeeklyComponent } from './chat-schedule-weekly/chat-schedul
 import { SnackbarComponent } from './snackbar/snackbar.component';
 // Importing pipes
 import { LimitTextPipe } from './pipes/limit-text.pipe';
+import { ZendeskStatsComponent } from './zendesk-stats/zendesk-stats.component';
 
 // Router routes
 const appRoutes: Routes = [
@@ -100,12 +102,14 @@ const appRoutes: Routes = [
     ChatScheduleWeeklyComponent,
     DialogChatMessageComponent,
     LimitTextPipe,
-    SnackbarComponent
+    SnackbarComponent,
+    ZendeskStatsComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    FlexLayoutModule,
     // Router initialization
     RouterModule.forRoot(
       appRoutes,
@@ -114,7 +118,7 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     MatDialogModule,
     MatButtonModule, MatCheckboxModule, MatMenuModule, MatToolbarModule, MatChipsModule, MatDividerModule,
-    MatSidenavModule, MatCardModule, MatIconModule, MatFormFieldModule, MatInputModule,
+    MatSidenavModule, MatCardModule, MatIconModule, MatFormFieldModule, MatInputModule, MatTabsModule,
     MatListModule, MatTableModule, MatSelectModule, MatProgressSpinnerModule, MatTooltipModule, MatSnackBarModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence(), AngularFireDatabaseModule

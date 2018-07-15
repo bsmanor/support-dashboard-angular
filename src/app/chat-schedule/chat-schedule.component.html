@@ -26,7 +26,7 @@
     
     <div style="text-align:center;margin:15px 0px;">
       <mat-icon class="dateArrows" style="float:left;" (click)="daysOffest(-1)">keyboard_arrow_left</mat-icon>
-      <span id="chatDate" style="position: relative;top: 5px;">{{now.dayOfWeek}},  {{now.month}}  {{now.dayOfMonth}}</span>
+      <span id="chatDate" style="position: relative;top: 5px;"><span fxHide fxShow.gt-sm>{{now.dayOfWeek}},</span>  {{now.month}}  {{now.dayOfMonth}}</span>
       <mat-icon class="dateArrows" style="float:right;" (click)="daysOffest(1)">keyboard_arrow_right</mat-icon>
     </div>
   </div>

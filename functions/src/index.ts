@@ -4,6 +4,7 @@ import * as functions from 'firebase-functions';
 import * as moment from "moment";
 import { Callback } from './../../src/app/models/callback';
 import { CallbackTicket, NotificationMessage } from './models';
+import { ZendeskTicket } from './models/zendesk-ticket';
 const cors = require('cors')({origin: true});
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 admin.initializeApp();
@@ -293,6 +294,16 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
 
 export const zendeskNewTicketkWebhook = functions.https.onRequest((req, res) => { // New ticket webhook
   cors(req, res, () => {
+    const message = {
+      message: {
+        title: `New ticket was created`,
+        body: `some body content`,
+        icon: 'https://firebasestorage.googleapis.com/v0/b/hasoffers-support-dashboard.appspot.com/o/images%2Fzendesk.png?alt=media&token=728c9259-971a-4b99-84e1-fdde2dba592c',
+        topic: 'callbacks'
+      }
+    }
+    // Send push notification
+    admin.firestore().doc('messages/global').set(message);
     res.status(200).json({response: 'sucess'})
   })
 })
@@ -334,6 +345,27 @@ export const zendeskAgentAssignedToTicket = functions.https.onRequest((req, res)
     admin.firestore().doc(`callbacks/${ticketId}`).update({assignee: assigneeEmail})
     .then((zendeskRes) => {
       res.status(200).json({response: `success`})
+    })
+    .catch((err) => {
+      res.status(200).json({response: err})
+    })
+  })
+})
+
+export const zendeskTicketsStats = functions.https.onRequest((req, res) => { 
+  // Listens to when a ticket is assigned to an agent on Zendesk, and updates the same on the DB.
+  cors(req, res, () => {
+    const status = req.query.status;
+    const group = req.query.group;
+    // https://tune.zendesk.com/api/v2/search.json?query=type:ticket status:open group:25906657
+    axios.get(`https://tune.zendesk.com/api/v2/search.json?query=type%3Aticket%20status%3A${status}%20group%3A${group}`, {
+      headers: {
+        "Authorization": 'Basic bWFub3JAdHVuZS5jb206RnJhbmtlbCo1MA=='
+      }
+    })
+    .then((zendeskRes) => {
+      let tickets: ZendeskTicket = zendeskRes.data;
+      res.status(200).json({response: tickets.count})
     })
     .catch((err) => {
       res.status(200).json({response: err})

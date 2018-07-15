@@ -1,6 +1,6 @@
 <div class="textCenter chatStatsCmponent" (mouseenter)="toggleShowTotalsBar()" (mouseleave)="toggleShowTotalsBar()">
-    <mat-icon class="iconHeader">question_answer</mat-icon>
-    <h1>Total</h1>
+    <mat-icon fxHide fxShow.gt-sm class="iconHeader">question_answer</mat-icon>
+    <h3 fxHide fxShow.gt-sm>Total</h3>
     <h3 class="textCenter chatStatsNum">{{totalChats >= 0 ? totalChats : null}}</h3>
     <mat-spinner *ngIf="totalChats === null" class="textCenter" [diameter]="30"></mat-spinner>
 </div>
