@@ -357,6 +357,7 @@ export const zendeskTicketsStats = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
     const status = req.query.status;
     const group = req.query.group;
+    const assignee = req.query.assignee;
     // https://tune.zendesk.com/api/v2/search.json?query=type:ticket status:open group:25906657
     axios.get(`https://tune.zendesk.com/api/v2/search.json?query=type%3Aticket%20status%3A${status}%20group%3A${group}`, {
       headers: {

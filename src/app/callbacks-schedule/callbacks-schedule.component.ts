@@ -77,6 +77,7 @@ export class CallbacksScheduleComponent implements OnInit {
     this.schedulesService.getFutureCallbacks().subscribe(res => {
       this.upcomingCallbacks = res;
       for (const callback of this.upcomingCallbacks) {
+        console.log(moment(callback.dateTimeUnixTimestamp, 'X').add(7, 'hours').format('LT'));
         if (callback.assignee !== 'Not Assigned') {
           this.agentsService.getAgentByEmail(callback.assignee).then(async (agent: Agent) => {
             callback.agent = await agent;
