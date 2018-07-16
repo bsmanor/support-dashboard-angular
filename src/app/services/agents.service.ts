@@ -8,8 +8,11 @@ import * as firebase from 'firebase';
 @Injectable()
 export class AgentsService {
 
+  
+
+
   get user(): Promise<Agent> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, rejected) => {
       firebase.auth().onAuthStateChanged( (user) => {
         if (user) {
           this.getAgentByEmail(user.email)

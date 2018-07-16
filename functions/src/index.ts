@@ -27,9 +27,7 @@ const zendesk = new Zendesk({
   url: 'https://tune.zendesk.com', 
   token: 'bWFub3JAdHVuZS5jb206RnJhbmtlbCo1MA==',
   oauth: true
-});
-
-
+})
 
 const yyyymmdd = (date) => {
   const yyyy = moment(date).format('YYYY');
@@ -353,13 +351,17 @@ export const zendeskAgentAssignedToTicket = functions.https.onRequest((req, res)
 })
 
 export const zendeskTicketsStats = functions.https.onRequest((req, res) => { 
-  // Listens to when a ticket is assigned to an agent on Zendesk, and updates the same on the DB.
   cors(req, res, () => {
     const status = req.query.status;
     const group = req.query.group;
     const assignee = req.query.assignee;
-    // https://tune.zendesk.com/api/v2/search.json?query=type:ticket status:open group:25906657
-    axios.get(`https://tune.zendesk.com/api/v2/search.json?query=type%3Aticket%20status%3A${status}%20group%3A${group}`, {
+    let url: string;
+    if (assignee) {
+      url = `https://tune.zendesk.com/api/v2/search.json?query=type:ticket status:${status} group:${group} assignee:${assignee}`;
+    } else {
+      url = `https://tune.zendesk.com/api/v2/search.json?query=type:ticket status:${status} group:${group}`;
+    }
+    axios.get(url, {
       headers: {
         "Authorization": 'Basic bWFub3JAdHVuZS5jb206RnJhbmtlbCo1MA=='
       }
