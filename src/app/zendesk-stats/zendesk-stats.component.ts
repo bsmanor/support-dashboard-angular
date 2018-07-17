@@ -1,3 +1,4 @@
+import { WebhooksListenersService } from './../services/webhooks-listeners.service';
 import { AgentsService } from './../services/agents.service';
 import { Component, OnInit } from '@angular/core';
 import { Agent } from '../models/agent';
@@ -14,7 +15,10 @@ export class ZendeskStatsComponent implements OnInit {
   pendingTickets;
   userOpenTickets;
 
-  constructor(private agentsService: AgentsService) { }
+  constructor(
+    private agentsService: AgentsService,
+    private webhooksListenersService: WebhooksListenersService
+  ) { }
 
   getZendeskTicketsStats()  {
     const group = 25906657; // HO Suport Zendesk Group ID
@@ -41,6 +45,9 @@ export class ZendeskStatsComponent implements OnInit {
 
   ngOnInit() {
     this.getZendeskTicketsStats();
+    this.webhooksListenersService.zendeskEvents().subscribe(event => {
+      this.getZendeskTicketsStats();
+    })
   }
 
 }

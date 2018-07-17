@@ -292,17 +292,25 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
 
 export const zendeskNewTicketkWebhook = functions.https.onRequest((req, res) => { // New ticket webhook
   cors(req, res, () => {
+    const ticketId = req.query.ticket_id;
     const message = {
       message: {
-        title: `New ticket was created`,
+        title: `New ticket was created: ${ticketId}`,
         body: `some body content`,
         icon: 'https://firebasestorage.googleapis.com/v0/b/hasoffers-support-dashboard.appspot.com/o/images%2Fzendesk.png?alt=media&token=728c9259-971a-4b99-84e1-fdde2dba592c',
         topic: 'callbacks'
       }
     }
     // Send push notification
-    admin.firestore().doc('messages/global').set(message);
+    admin.firestore().doc('messages/global').update(message);
     res.status(200).json({response: 'sucess'})
+  })
+})
+
+export const zendeskTicketChangesWebhook = functions.https.onRequest((req, res) => { 
+  cors(req, res, () => {
+    const ticket = req.query.ticket;
+    admin.firestore().doc('webhooks/zendesk').update({ticket: ticket});
   })
 })
 
@@ -375,3 +383,4 @@ export const zendeskTicketsStats = functions.https.onRequest((req, res) => {
     })
   })
 })
+

@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as firebase from 'firebase';
 
 @Injectable()
 export class AgentsService {
 
-  
-
+  private userRefObs = new BehaviorSubject<Agent>(null);
+  userRef = this.userRefObs.asObservable();
 
   get user(): Promise<Agent> {
     return new Promise((resolve, rejected) => {
@@ -61,6 +62,7 @@ export class AgentsService {
         if (user) {
           this.getAgentByEmail(user.email)
           .then((agent: Agent) => {
+            this.userRefObs.next(agent);
             resolve(agent);
           })
           .catch(err => {
