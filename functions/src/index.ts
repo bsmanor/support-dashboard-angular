@@ -293,6 +293,7 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
 export const zendeskNewTicketkWebhook = functions.https.onRequest((req, res) => { // New ticket webhook
   cors(req, res, () => {
     const ticketId = req.query.ticket_id;
+    const params = req.query.params;
     const message = {
       message: {
         title: `New ticket was created: ${ticketId}`,
@@ -302,15 +303,12 @@ export const zendeskNewTicketkWebhook = functions.https.onRequest((req, res) => 
       }
     }
     // Send push notification
-    admin.firestore().doc('messages/global').update(message);
+    if (params === 'ticket_change') {
+      admin.firestore().doc('messages/global').update(message);
+    }
+    // Updating DB in order for the client to update Zendesk stats
+    admin.firestore().doc('webhooks/zendesk').update({ticket: ticketId})
     res.status(200).json({response: 'sucess'})
-  })
-})
-
-export const zendeskTicketChangesWebhook = functions.https.onRequest((req, res) => { 
-  cors(req, res, () => {
-    const ticket = req.query.ticket;
-    admin.firestore().doc('webhooks/zendesk').update({ticket: ticket});
   })
 })
 
