@@ -39,13 +39,17 @@ export class ZendeskStatsComponent implements OnInit {
       // Get user's pending tickets
       fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskTicketsStats/?group=${group}&status=pending&assignee=${assignee}`)
       .then(res => { return res.json() } )
-      .then(res => { this.pendingTickets = res.response; });
+      .then(res => { 
+        this.pendingTickets = res.response;
+        console.log('zendesk fetched');
+      });
     })
   }
 
   ngOnInit() {
     this.getZendeskTicketsStats();
     this.webhooksListenersService.zendeskEvents().subscribe(event => {
+      console.log(event);
       this.getZendeskTicketsStats();
     })
   }

@@ -293,17 +293,18 @@ export const zendeskNewCallbackWebhook = functions.https.onRequest((req, res) =>
 export const zendeskNewTicketkWebhook = functions.https.onRequest((req, res) => { // New ticket webhook
   cors(req, res, () => {
     const ticketId = req.query.ticket_id;
+    const requestedBy = req.query.requested_by;
     const params = req.query.params;
     const message = {
       message: {
         title: `New ticket was created: ${ticketId}`,
-        body: `some body content`,
-        icon: 'https://firebasestorage.googleapis.com/v0/b/hasoffers-support-dashboard.appspot.com/o/images%2Fzendesk.png?alt=media&token=728c9259-971a-4b99-84e1-fdde2dba592c',
+        body: `Sent from ${requestedBy}`,
+        icon: 'https://firebasestorage.googleapis.com/v0/b/hasoffers-support-dashboard.appspot.com/o/images%2FTUNE_VisualMark_Color-300x300.png?alt=media&token=be0107c4-c8ec-494f-90c7-1fdc83e4524b',
         topic: 'callbacks'
       }
     }
     // Send push notification
-    if (params === 'ticket_change') {
+    if (params !== 'ticket_change') {
       admin.firestore().doc('messages/global').update(message);
     }
     // Updating DB in order for the client to update Zendesk stats
