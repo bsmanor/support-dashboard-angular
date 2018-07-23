@@ -31,28 +31,30 @@ export class ZendeskStatsComponent implements OnInit {
   }
 
   getZendeskTicketsStats()  {
+    console.log('zendesk fetched');
     const group = 25906657; // HO Suport Zendesk Group ID
     let assignee: string;
-    this.agentsService.user.then(user => {
-      assignee = user.email;
-      fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskTicketsStats/?group=${group}&status=open`)
-      .then(res => { return res.json() } )
-      .then(res => { this.openTickets = res.response; });
-      // Get new tickets
-      fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskTicketsStats/?group=${group}&status=new`)
-      .then(res => { return res.json() } )
-      .then(res => { this.newTickets = res.response; });
-      // Get user's open tickets
-      fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskTicketsStats/?group=${group}&status=open&assignee=${assignee}`)
-      .then(res => { return res.json() } )
-      .then(res => { this.userOpenTickets = res.response; });
-      // Get user's pending tickets
-      fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskTicketsStats/?group=${group}&status=pending&assignee=${assignee}`)
-      .then(res => { return res.json() } )
-      .then(res => { 
-        this.pendingTickets = res.response;
-        console.log('zendesk fetched');
-      });
+    this.agentsService.userRef.subscribe(user => {
+      if (user) {
+        assignee = user.email;
+        fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskTicketsStats/?group=${group}&status=open`)
+        .then(res => { return res.json() } )
+        .then(res => { this.openTickets = res.response; });
+        // Get new tickets
+        fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskTicketsStats/?group=${group}&status=new`)
+        .then(res => { return res.json() } )
+        .then(res => { this.newTickets = res.response; });
+        // Get user's open tickets
+        fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskTicketsStats/?group=${group}&status=open&assignee=${assignee}`)
+        .then(res => { return res.json() } )
+        .then(res => { this.userOpenTickets = res.response; });
+        // Get user's pending tickets
+        fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskTicketsStats/?group=${group}&status=pending&assignee=${assignee}`)
+        .then(res => { return res.json() } )
+        .then(res => { 
+          this.pendingTickets = res.response;
+        });
+      }
     })
   }
 

@@ -73,9 +73,6 @@ export class HomeComponent implements OnInit {
         this.openSnackBar(message.notification.title);
       }
     });
-    this.agentsService.userRef.subscribe(user => {
-      console.log(user);
-    })
   }
 
 
