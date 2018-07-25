@@ -59,13 +59,6 @@ export class ChatsOnlineComponent implements OnInit {
 
   subscribeToLivechatEvents() {
     this.webhooksListenersService.livechatEvents().subscribe((res) => {
-      let event = res.event;
-      // if(event === 1) {
-      // }
-      // if(event === 2) {
-      // }
-      // if(event === 3) {
-      // }
       this.onlineAgents = [];
       this.getLiveChatChattingVisitors();
       this.getLiveChatAgentsStatus();
@@ -115,7 +108,6 @@ export class ChatsOnlineComponent implements OnInit {
     this.chatStatsService.getLiveChatAgentsStatus().subscribe((res: AgentsStatusResponse) => {
       for(let agent of res.response) {
         if(agent.status === 'accepting chats') {
-          console.log(`My name is ${agent.name} and I'm accepting chats!`);
           this.agentsAcceptingChats.push(agent);
           let isExist = false;
           for(let onlineAgent of this.onlineAgents) {

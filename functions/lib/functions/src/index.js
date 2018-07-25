@@ -124,9 +124,9 @@ exports.liveChatAgentStatus = functions.https.onRequest((req, res) => {
 });
 exports.liveChatChatStartedWebhook = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
-        livechatRef.update({ event: 1 })
+        livechatRef.update({ event: req.body.event_unique_id })
             .then(response => {
-            res.status(200).json({ response: 'Livechat: New chat started' });
+            res.status(200).json({ response: 'success' });
         })
             .catch(err => {
             res.status(200).json({ response: err });
@@ -135,7 +135,8 @@ exports.liveChatChatStartedWebhook = functions.https.onRequest((req, res) => {
 });
 exports.liveChatChatEndedWebhook = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
-        livechatRef.update({ event: 2 })
+        console.log(req.body);
+        livechatRef.update({ event: req.body.event_unique_id })
             .then(response => {
             res.status(200).json({ response: 'Livechat: chat ended' });
         })
@@ -146,7 +147,7 @@ exports.liveChatChatEndedWebhook = functions.https.onRequest((req, res) => {
 });
 exports.liveChatVisitorQueuedWebhook = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
-        livechatRef.update({ event: 3 })
+        livechatRef.update({ event: req.body.event_unique_id })
             .then(response => {
             res.status(200).json({ response: 'Livechat: New visitor in the queue' });
         })

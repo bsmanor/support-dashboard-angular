@@ -59,9 +59,6 @@ export class ZendeskStatsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.zendeskStatsService.zendeskStats.subscribe(snap => {
-      console.log(snap);
-    })
     this.webhooksListenersService.zendeskEvents().subscribe(event => {
       console.log(event);
       this.getZendeskTicketsStats();
