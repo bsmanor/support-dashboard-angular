@@ -117,15 +117,15 @@ hr {
   // right: 0;
 }
 
+.scheduleCard {
+  //height: 50vh;
+}
+
 .mainComponentsBorder {
   margin: 0px 10px;
   padding: 15px;
   border: solid 1px $secondaryColor;
   border-radius: 20px;
-}
-
-.scheduleCard {
-  //height: 50vh;
 }
 
 .schedulesHeader {
@@ -152,6 +152,11 @@ hr {
 }
 .headerText {
   color: $secondaryColor;
+}
+
+.mainCompHeader {
+  float: left;
+  display: block;
 }
 
 

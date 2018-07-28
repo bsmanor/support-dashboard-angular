@@ -55,12 +55,12 @@ export class ZendeskStatsComponent implements OnInit {
           this.pendingTickets = res.response;
         });
       }
-    })
+    }).unsubscribe();
   }
 
   ngOnInit() {
     this.webhooksListenersService.zendeskEvents().subscribe(event => {
-      console.log(event);
+      console.log(event, new Date().toTimeString());
       this.getZendeskTicketsStats();
     })
   }
