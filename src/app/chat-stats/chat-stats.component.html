@@ -1,12 +1,10 @@
-<mat-card class="mainComponentsBorder textCenter" fxLayout="column" fxLayoutGap="20px">
-  <div><img src="https://res.cloudinary.com/manor-assignment/image/upload/w_60,h_40/v1532603079/support-dashboard/livechat-logo.png" alt="Live Chat Software"></div>
-  <!-- <div id="wave" style="float:right;" matTooltip="Statistics" matTooltipPosition="below">
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-  </div> -->
+<mat-card class="mainComponentsBorder textCenter" fxLayout="column" fxLayoutGap="20px" style="height: 100%;">
+  <div fxLayout="row" fxLayoutGap="20px">
+    <img src="https://res.cloudinary.com/manor-assignment/image/upload/w_50,h_30/v1532603079/support-dashboard/livechat-logo.png" alt="Live Chat Software">
+    <span>Chats</span>
+  </div>
+
   <div
-    fxHide fxShow.gt-sm
     fxLayout="row wrap" 
     fxLayoutGap="20px"
     fxLayoutAlign="space-between"
@@ -16,12 +14,5 @@
     <app-chats-online fxFlex="20%"></app-chats-online>
     <app-chats-queued fxFlex="20%"></app-chats-queued>
   </div>
-
-  <mat-tab-group fxHide.gt-sm>
-    <mat-tab label="Total"><app-chats-total></app-chats-total></mat-tab>
-    <mat-tab label="Satisfaction"><app-chats-satisfaction></app-chats-satisfaction></mat-tab>
-    <mat-tab label="Online"><app-chats-online></app-chats-online></mat-tab>
-    <mat-tab label="Queued"><app-chats-queued></app-chats-queued></mat-tab>
-  </mat-tab-group>
 
 </mat-card>

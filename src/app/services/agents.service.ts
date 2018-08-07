@@ -5,6 +5,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as firebase from 'firebase';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AgentsService {
@@ -51,6 +52,7 @@ export class AgentsService {
   constructor(
     public afAuth: AngularFireAuth,
     private afs: AngularFirestore,
+    private router: Router
   ) {
     this.agentsRef = afs.collection<Agent>('agents');
     this.agents = this.agentsRef.valueChanges();
@@ -68,6 +70,8 @@ export class AgentsService {
           .catch(err => {
             console.log(err);
           });
+        } else {
+          this.router.navigate(['/']);
         }
       });
     });

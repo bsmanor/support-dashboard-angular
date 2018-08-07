@@ -1,7 +1,21 @@
-<div fxLayout="column">
-  <div fxLayout.sm="column" fxLayout.xs="column">
+<!-- Desktop View-->
+<div fxHide fxShow.gt-sm fxLayout="column" fxLayoutGap="30px">
+
+  <div fxLayout="row" fxLayoutGap="20px" style="height:40vh">
     <app-zendesk-stats fxFlex="50%"></app-zendesk-stats>
     <app-chat-stats fxFlex="50%"></app-chat-stats>
   </div>
-  <app-schedules style="flex:2;padding-top:20px;"></app-schedules>
+
+  <div fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="20px" style="height:40vh">
+    <app-callbacks-schedule fxFlex="50%"></app-callbacks-schedule>
+    <app-chat-schedule fxFlex="50%"></app-chat-schedule>
+  </div>  
 </div>
+
+<!-- Mobile View-->
+<mat-tab-group fxHide.gt-sm>
+  <mat-tab label="Tickets"><app-zendesk-stats></app-zendesk-stats></mat-tab>
+  <mat-tab label="Chat Stats"><app-chat-stats></app-chat-stats></mat-tab>
+  <mat-tab label="Callbacks"><app-callbacks-schedule></app-callbacks-schedule></mat-tab>
+  <mat-tab label="Chat Schedule"><app-chat-schedule></app-chat-schedule></mat-tab>
+</mat-tab-group>

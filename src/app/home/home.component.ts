@@ -57,7 +57,7 @@ export class HomeComponent implements OnInit {
     this.snackBar.openFromComponent(SnackbarComponent, {
       duration: 10000,
       data: message
-    })
+    });
   }
 
   // This functions checks if a user is logged in.

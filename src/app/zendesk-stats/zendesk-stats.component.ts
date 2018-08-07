@@ -38,20 +38,20 @@ export class ZendeskStatsComponent implements OnInit {
       if (user) {
         assignee = user.email;
         fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskTicketsStats/?group=${group}&status=open`)
-        .then(res => { return res.json() } )
+        .then(res => res.json() )
         .then(res => { this.openTickets = res.response; });
         // Get new tickets
         fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskTicketsStats/?group=${group}&status=new`)
-        .then(res => { return res.json() } )
+        .then(res => res.json() )
         .then(res => { this.newTickets = res.response; });
         // Get user's open tickets
         fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskTicketsStats/?group=${group}&status=open&assignee=${assignee}`)
-        .then(res => { return res.json() } )
+        .then(res => res.json() )
         .then(res => { this.userOpenTickets = res.response; });
         // Get user's pending tickets
         fetch(`https://us-central1-hasoffers-support-dashboard.cloudfunctions.net/zendeskTicketsStats/?group=${group}&status=pending&assignee=${assignee}`)
-        .then(res => { return res.json() } )
-        .then(res => { 
+        .then(res => res.json() )
+        .then(res => {
           this.pendingTickets = res.response;
         });
       }
@@ -62,7 +62,7 @@ export class ZendeskStatsComponent implements OnInit {
     this.webhooksListenersService.zendeskEvents().subscribe(event => {
       console.log(event, new Date().toTimeString());
       this.getZendeskTicketsStats();
-    })
+    });
   }
 
 }

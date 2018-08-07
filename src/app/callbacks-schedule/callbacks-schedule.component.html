@@ -1,19 +1,19 @@
-<mat-card class="scheduleCard mainComponentsBorder">
+<mat-card class="scheduleCard mainComponentsBorder" style="height: 100%;">
   <div class="scheduleCardHead">
 
-    <div class="textCenter flexRow spaceBetween">
+    <div class="textCenter" fxLayout="row" fxLayoutAlign="space-around">
 
-      <!-- <button (click)="updateHours()">Update Hours</button> -->
+      <div fxLayout="row" fxLayoutAlign="start" fxLayoutGap="20px">
+        <img src="https://res.cloudinary.com/manor-assignment/image/upload/h_30,w_40/v1533468826/support-dashboard/images_2FiconCallback.png" alt="Zendesk Callbacks">
+        <span style="position: relative;top:10px;">Upcoming Callbacks</span>
+      </div>
 
-      <div id="placegolder" style="flex:1;"></div>
-      <!-- <mat-icon class="iconHeader" style="flex:1;left:2px;">call</mat-icon> -->
-      <img src="https://firebasestorage.googleapis.com/v0/b/hasoffers-support-dashboard.appspot.com/o/images%2FiconCallback.png?alt=media&token=7018b32c-0000-4cec-894c-0b6185b47b5c" alt="Zendesk Callbacks" width="50px" height="50px">
       <div style="flex:1;">
         <button mat-icon-button [matMenuTriggerFor]="menu" style="float:right;">
           <mat-icon>more_vert</mat-icon>
         </button>
+
         <mat-menu #menu="matMenu">
-  
           <button mat-menu-item (click)="openAddCallbackDialog()">
             <mat-icon>add</mat-icon>
             <span>New</span>
@@ -70,8 +70,14 @@
     
           </mat-menu>
         </div>
-    </mat-list-item>
-  </mat-list>
 
+        
+      </mat-list-item>
+    </mat-list>
+    
+    <div *ngIf="!upcomingCallbacks.length" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="70px" style="height: 80%;">
+      <mat-icon class="secondaryColor" style="font-size: 60px">thumb_up</mat-icon>
+      <div class="secondaryColor">There are no upcoming callbacks at the moment</div>
+    </div>
 
 </mat-card>
