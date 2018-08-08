@@ -35,11 +35,8 @@ export class CallbacksScheduleComponent implements OnInit {
 
   updateHours() {
     this.schedulesService.updateHours();
-  }  
-
-  hovered(listItem) {
-    console.log(listItem);
   }
+
   updateCallback = (id, action) => {
     this.schedulesService.updateCallback(id, action);
   }
@@ -79,7 +76,7 @@ export class CallbacksScheduleComponent implements OnInit {
     this.schedulesService.getFutureCallbacks().subscribe(res => {
       this.upcomingCallbacks = res;
       for (const callback of this.upcomingCallbacks) {
-        console.log(moment(callback.dateTimeUnixTimestamp, 'X').add(7, 'hours').format('LT'));
+        callback.dateTimeUnixTimestamp = moment(callback.dateTimeUnixTimestamp, 'X').add(7, 'hours').format('X');
         if (callback.assignee !== 'Not Assigned') {
           this.agentsService.getAgentByEmail(callback.assignee).then(async (agent: Agent) => {
             callback.agent = await agent;

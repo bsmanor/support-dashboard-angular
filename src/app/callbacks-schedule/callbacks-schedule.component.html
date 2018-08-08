@@ -36,7 +36,7 @@
       <img *ngIf="!callback.agent" matListAvatar src="../../assets/images/unassigned.jpg" alt="...">
       <h3 matLine>{{callback.username}} ({{callback.networkId}})</h3>
       <!-- <h3 matLine>{{callback.dateTime}}</h3> -->
-      <h3 matLine>{{callback.dateTimeUnixTimestamp * 1000 | date : 'fullDate'}}, {{callback.dateTimeUnixTimestamp * 1000 | date : 'HH'}}:{{callback.dateTimeUnixTimestamp * 1000 | date : 'mm'}}</h3>
+      <h3 matLine>{{callback.dateTimeUnixTimestamp * 1000 | date : 'fullDate'}}, {{callback.dateTimeUnixTimestamp * 1000 | date : 'shortTime'}}</h3>
       <a href="https://{{callback.zendeskLink}}" target="_blank" mat-raised-button color="accent"># {{callback.ticketId}}</a>
       <div class="menuIcon" style="flex:1;">
 
@@ -75,9 +75,11 @@
       </mat-list-item>
     </mat-list>
     
-    <div *ngIf="!upcomingCallbacks.length" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="70px" style="height: 80%;">
-      <mat-icon class="secondaryColor" style="font-size: 60px">thumb_up</mat-icon>
-      <div class="secondaryColor">There are no upcoming callbacks at the moment</div>
+    <div *ngIf="allCallbacks">
+      <div *ngIf="!upcomingCallbacks.length" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="70px" style="height: 80%;">
+        <mat-icon class="secondaryColor" style="font-size: 60px">thumb_up</mat-icon>
+        <div class="secondaryColor">There are no upcoming callbacks at the moment</div>
+      </div>
     </div>
 
 </mat-card>

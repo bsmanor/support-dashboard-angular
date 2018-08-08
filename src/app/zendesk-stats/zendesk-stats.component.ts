@@ -31,7 +31,6 @@ export class ZendeskStatsComponent implements OnInit {
   }
 
   getZendeskTicketsStats()  {
-    console.log('zendesk fetched');
     const group = 25906657; // HO Suport Zendesk Group ID
     let assignee: string;
     this.agentsService.userRef.subscribe(user => {
@@ -60,7 +59,6 @@ export class ZendeskStatsComponent implements OnInit {
 
   ngOnInit() {
     this.webhooksListenersService.zendeskEvents().subscribe(event => {
-      console.log(event, new Date().toTimeString());
       this.getZendeskTicketsStats();
     });
   }
