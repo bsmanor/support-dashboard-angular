@@ -1,9 +1,8 @@
-<mat-card class="mainComponentsBorder textCenter secondaryColor" fxLayout="column" fxLayoutGap="20px" style="height: 100%;">
-  <div fxLayout="row" fxLayoutGap="20px">
+<mat-card class="mainComponentsBorder textCenter secondaryColor noPadding" fxLayout="column" fxLayoutGap="20px" style="height: 100%;">
+  <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" class="cardHeader">
     <img src="https://res.cloudinary.com/manor-assignment/image/upload/w_30,h_30/v1533468105/support-dashboard/zendesk-medium.png" alt="Zendesk">
-    <span>Tickets</span>
   </div>
-  <div fxLayout="row" fxLayoutAlign="space-around">
+  <div class="matCardPadding" fxLayout="row" fxLayoutAlign="space-around">
     <div><h3><p>Opens</p>{{openTickets}}</h3></div>
     <div><h3><p>New</p>{{newTickets}}</h3></div>
     <div><h3><p>My Opens</p>{{userOpenTickets}}</h3></div>

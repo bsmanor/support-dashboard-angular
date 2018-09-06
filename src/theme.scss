@@ -167,6 +167,21 @@ hr {
   display: block;
 }
 
+.noPadding {
+  padding: 0px  !important;
+}
+
+.matCardPadding {
+  padding: 30px;
+}
+
+.cardHeader {
+  background-color: $secondaryColor;
+  height: 50px;
+  width: 100%;
+  color: $background;
+}
+
 
 
 
