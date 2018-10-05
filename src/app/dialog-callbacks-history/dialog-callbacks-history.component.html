@@ -1,13 +1,23 @@
-<input mat-input #key (keyup)="0">
+<form>
+  <mat-form-field>
+    <input matInput placeholder="Search" #key (keyup)="0">
+  </mat-form-field>
+</form>
+<div style="font-size:0.6%; color: gray">You can search callbacks by network ID, ticket ID, email or user name</div>
 <mat-list *ngIf="data.allCallbacks">
   <ng-container *ngFor="let callback of data.allCallbacks">
-    <mat-list-item class="callbacksList" *ngIf="callback.networkId.includes(key.value) || callback.ticketId.includes(key.value)" >
+    <mat-list-item class="callbacksList" *ngIf="callback.networkId.includes(key.value) || callback.ticketId.includes(key.value) || callback.username.includes(key.value) || callback.email.includes(key.value)" >
+      <mat-icon *ngIf="callback.status === 'done'" mat-list-icon>done_all</mat-icon>
+      <mat-icon *ngIf="callback.status === 'canceled'" mat-list-icon>delete_outline</mat-icon>
+      <mat-icon *ngIf="callback.status === 'pending'" mat-list-icon>alarm</mat-icon>
+      <mat-icon *ngIf="callback.status === 'Open'" mat-list-icon>alarm</mat-icon>
       <img *ngIf="callback.agent" matListAvatar src={{callback.agent.picture}} alt="...">
       <img *ngIf="!callback.agent" matListAvatar src="../../assets/images/unassigned.jpg" alt="...">
-      <h3 matLine>{{callback.username}} ({{callback.networkId}})</h3>
-      <!-- <h3 matLine>{{callback.dateTime}}</h3> -->
+      <h3 matLine>{{callback.username}}</h3>
+      <h3 style="color:gray" matLine>{{callback.networkId}}</h3>
       <h3 matLine>{{callback.dateTimeUnixTimestamp * 1000 | date : 'fullDate'}}, {{callback.dateTimeUnixTimestamp * 1000 | date : 'HH'}}:{{callback.dateTimeUnixTimestamp * 1000 | date : 'mm'}}</h3>
       <a href="https://{{callback.zendeskLink}}" target="_blank" mat-raised-button color="accent"># {{callback.ticketId}}</a>
+      <mat-divider></mat-divider>
     </mat-list-item>
   </ng-container>
     

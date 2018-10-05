@@ -94,10 +94,10 @@ export class SchedulesService {
     return this.futureCallbacks;
   }
 
-  updateCallback = (id, action) => {
-    this.afs.doc(`callbacks/${id}`).update({status: action})
+  updateCallback = (id, property, value) => {
+    this.callbacksRef.doc(id).update({[property]: value})
     .then(res => {
-      return 'success';
+      console.log(`callback marked as ${status}`);
     })
     .catch(err => {
       return err;

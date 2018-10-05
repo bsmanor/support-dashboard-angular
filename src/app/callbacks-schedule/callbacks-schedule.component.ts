@@ -9,11 +9,20 @@ import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { DialogCallbacksHistoryComponent } from './../dialog-callbacks-history/dialog-callbacks-history.component';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-callbacks-schedule',
   templateUrl: './callbacks-schedule.component.html',
-  styleUrls: ['./callbacks-schedule.component.css']
+  styleUrls: ['./callbacks-schedule.component.css'],
+  animations: [
+    trigger('fade', [
+      transition('void => *', [
+        style({backgroundColor: 'yellow', opacity: 0}),
+        animate(2000)
+      ])
+    ])  
+  ]
 })
 export class CallbacksScheduleComponent implements OnInit {
 
@@ -37,8 +46,8 @@ export class CallbacksScheduleComponent implements OnInit {
     this.schedulesService.updateHours();
   }
 
-  updateCallback = (id, action) => {
-    this.schedulesService.updateCallback(id, action);
+  updateCallback = (id, property, value) => {
+    this.schedulesService.updateCallback(id, property, value);
   }
 
   deleteCallback = (id) => {

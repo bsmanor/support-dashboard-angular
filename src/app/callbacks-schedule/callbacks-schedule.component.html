@@ -32,52 +32,58 @@
 
     </div>
   </div>
-  <div class="matCardPadding">
-    <mat-list *ngIf="allCallbacks">
-      <mat-list-item class="callbacksList" *ngFor="let callback of upcomingCallbacks" >
-        <img *ngIf="callback.agent" matListAvatar src={{callback.agent.picture}} alt="...">
-        <img *ngIf="!callback.agent" matListAvatar src="../../assets/images/unassigned.jpg" alt="...">
-        <h3 matLine>{{callback.username}} ({{callback.networkId}})</h3>
-        <!-- <h3 matLine>{{callback.dateTime}}</h3> -->
-        <h3 matLine>{{callback.dateTimeUnixTimestamp * 1000 | date : 'fullDate'}}, {{callback.dateTimeUnixTimestamp * 1000 | date : 'shortTime'}}</h3>
-        <a href="https://{{callback.zendeskLink}}" target="_blank" mat-raised-button color="accent"># {{callback.ticketId}}</a>
-        <div class="menuIcon" style="flex:1;">
+    <div class="matCardPadding" style="overflow:auto">
+      <mat-list *ngIf="allCallbacks">
+        <ng-container *ngFor="let callback of upcomingCallbacks">
+        <mat-list-item class="callbacksList" @fade *ngIf="callback.status !== 'done'">
+          <img *ngIf="callback.agent" matListAvatar src={{callback.agent.picture}} alt="...">
+          <img *ngIf="!callback.agent" matListAvatar src="../../assets/images/unassigned.jpg" alt="...">
+          <h3 matLine>{{callback.username}} ({{callback.networkId}})</h3>
+          <!-- <h3 matLine>{{callback.dateTime}}</h3> -->
+          <h3 matLine>{{callback.dateTimeUnixTimestamp * 1000 | date : 'fullDate'}}, {{callback.dateTimeUnixTimestamp * 1000 | date : 'shortTime'}}</h3>
+          <a href="https://{{callback.zendeskLink}}" target="_blank" mat-raised-button color="accent"># {{callback.ticketId}}</a>
+          <div class="menuIcon" style="flex:1;">
 
-            <button mat-icon-button [matMenuTriggerFor]="menu" style="float:right;">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-
-            <mat-menu #menu="matMenu">
-
-      
-              <button mat-menu-item [matMenuTriggerFor]="agentsMenu">
-                <mat-icon>user</mat-icon>
-                <span>Assign</span>
+              <button mat-icon-button [matMenuTriggerFor]="menu" style="float:right;">
+                <mat-icon>more_vert</mat-icon>
               </button>
 
-              <mat-menu #agentsMenu="matMenu">
-                <button mat-menu-item *ngFor="let agent of agents" (click)="assignAgentToCallback(agent, callback.ticketId)">
-                  {{agent.name}}
+              <mat-menu #menu="matMenu">
+
+                <button mat-menu-item [matMenuTriggerFor]="agentsMenu">
+                  <mat-icon>user</mat-icon>
+                  <span>Assign</span>
                 </button>
+
+                <mat-menu #agentsMenu="matMenu">
+                  <button mat-menu-item *ngFor="let agent of agents" (click)="assignAgentToCallback(agent, callback.ticketId)">
+                    {{agent.name}}
+                  </button>
+                </mat-menu>
+
+                <button mat-menu-item (click)="updateCallback(callback.ticketId, 'status', 'done')">
+                  <mat-icon>done</mat-icon>
+                  <span>Mark as done</span>
+                </button>
+
+                <button mat-menu-item (click)="updateCallback(callback.ticketId, 'status', 'canceled')">
+                  <mat-icon>cancel</mat-icon>
+                  <span>Cancel</span>
+                </button>
+        
+                <button mat-menu-item (click)="deleteCallback(callback.ticketId)">
+                  <mat-icon color="warn">delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+        
               </mat-menu>
+            </div>
 
-              <button mat-menu-item (click)="updateCallback(callback.id, 'Done')">
-                <mat-icon>done</mat-icon>
-                <span>Mark as done</span>
-              </button>
-      
-              <button mat-menu-item (click)="deleteCallback(callback.ticketId)">
-                <mat-icon color="warn">delete</mat-icon>
-                <span>Delete</span>
-              </button>
-      
-            </mat-menu>
-          </div>
-
-          
-        </mat-list-item>
-      </mat-list>
-    </div>
+            <mat-divider></mat-divider>
+          </mat-list-item>
+          </ng-container>
+        </mat-list>
+      </div>
     
     <div *ngIf="allCallbacks">
       <div *ngIf="!upcomingCallbacks.length" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="70px" style="height: 80%;">
