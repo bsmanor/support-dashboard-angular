@@ -1,12 +1,11 @@
-<div *ngIf="!isEditMode">
-  <div style="position:sticky; top:20px; display: block; z-index:10; background-color: whitesmoke; padding: 20px;">
+<div *ngIf="!isEditMode" [@bounceOutUp]="bounceOutUp">
+  <div style="position:sticky; top:0px; display: block; z-index:10; background-color: whitesmoke; padding: 20px; opacity: 0.9">
     <form>
       <mat-form-field>
         <input matInput placeholder="Search" #key (keyup)="0">
           <mat-icon matSuffix matTooltip="Search callbacks by network ID, ticket ID, email or user name">info</mat-icon>
       </mat-form-field>
     </form>
-    <div style="font-size:0.6em; color: gray;">You can search callbacks by network ID, ticket ID, email or user name</div>
   </div>
   
   <div>
@@ -16,6 +15,7 @@
           class="callbacksList" 
           *ngIf="callback.networkId.includes(key.value) || callback.ticketId.includes(key.value) || callback.username.includes(key.value) || callback.email.includes(key.value)"
         >
+        <!-- Icons to be displayed alongside each callback -->
           <mat-icon *ngIf="callback.status === 'done'" mat-list-icon>done_all</mat-icon>
           <mat-icon *ngIf="callback.status === 'canceled'" mat-list-icon>delete_outline</mat-icon>
           <mat-icon *ngIf="callback.status === 'pending'" mat-list-icon>alarm</mat-icon>
@@ -35,15 +35,66 @@
   </div>
 </div>
 
-<div *ngIf="isEditMode">
+<!-- Shown when Edit Mode is True -->
+<div *ngIf="isEditMode" [@bounceOutUp]="bounceOutUp" style="padding:15px;" fxLayout="column" fxLayoutGap="20px">
+
   <div>
-    <form>
-      <ng-container>
-        <mat-form-field>
-          <input matInput placeholder="Search" (keyup)="0">
-        </mat-form-field>
-      </ng-container>
-    </form>
+    <mat-icon (click)="exitEditMode()">arrow_back</mat-icon>
   </div>
-  {{selectedCallback.username}}
+
+  <div fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">      
+    <p>
+      <mat-form-field appearance="outline">
+        <input name="username" matInput placeholder="" [(ngModel)]="selectedCallback.username">
+        <mat-hint>Username</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p>
+      <mat-form-field appearance="outline">
+        <input name="networkId" matInput placeholder="" [(ngModel)]="selectedCallback.networkId">
+        <mat-hint>Network ID</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p>
+      <mat-form-field appearance="outline">
+        <input name="date" matInput placeholder="" [(ngModel)]="selectedCallback.dateTime">
+        <mat-hint>Date</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p>
+      <mat-form-field appearance="outline">
+        <input name="assignee" matInput placeholder="" [(ngModel)]="selectedCallback.assignee">
+        <mat-hint>Assignee</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p>
+      <mat-form-field appearance="outline">
+        <input name="ticketId" matInput placeholder="" [(ngModel)]="selectedCallback.ticketId">
+        <mat-hint>Ticket ID</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p>
+      <mat-form-field appearance="outline">
+        <input name="zendeskLink" matInput placeholder="" [(ngModel)]="selectedCallback.zendeskLink">
+        <mat-hint>Zendesk Link</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p>
+      <mat-form-field appearance="outline">
+        <input name="status" matInput placeholder="" [(ngModel)]="selectedCallback.status">
+        <mat-hint>Status</mat-hint>
+      </mat-form-field>
+    </p>
+  
+  </div>
+
+  <div style="width:100%">
+    <button mat-raised-button (click)="updateCallback()" color="primary" style="width:100%;">SAVE</button>
+  </div>
 </div>

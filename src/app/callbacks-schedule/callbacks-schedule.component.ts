@@ -56,8 +56,8 @@ export class CallbacksScheduleComponent implements OnInit {
 
   openCallabckHistoryDialog() {
     this.dialog.open(DialogCallbacksHistoryComponent, {
-      width: '500px',
-      height: '600px',
+      width: '600px',
+      height: '700px',
       data: {allCallbacks: this.allCallbacks}
     });
   }

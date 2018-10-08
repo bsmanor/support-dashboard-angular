@@ -38,8 +38,8 @@
         <mat-list-item class="callbacksList" @fade *ngIf="callback.status !== 'done'">
           <img *ngIf="callback.agent" matListAvatar src={{callback.agent.picture}} alt="...">
           <img *ngIf="!callback.agent" matListAvatar src="../../assets/images/unassigned.jpg" alt="...">
-          <h3 matLine>{{callback.username}} ({{callback.networkId}})</h3>
-          <!-- <h3 matLine>{{callback.dateTime}}</h3> -->
+          <h3 matLine style="text-transform: capitalize;">{{callback.username}}</h3>
+          <p matLine>{{callback.networkId}}</p>
           <h3 matLine>{{callback.dateTimeUnixTimestamp * 1000 | date : 'fullDate'}}, {{callback.dateTimeUnixTimestamp * 1000 | date : 'shortTime'}}</h3>
           <a href="https://{{callback.zendeskLink}}" target="_blank" mat-raised-button color="accent"># {{callback.ticketId}}</a>
           <div class="menuIcon" style="flex:1;">
