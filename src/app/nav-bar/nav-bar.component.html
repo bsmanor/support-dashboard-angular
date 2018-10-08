@@ -2,11 +2,19 @@
   color="primary" 
   style="margin-bottom:15px; height:30px; position:sticky; top:0; background-color:#455a64; z-index:10">
   <mat-toolbar-row style="color:#cfd8dc;">
-    <span><img src="../../assets/images/TUNE_VisualMark_White.png" height="30px" width="30px" style="position:relative;margin-right:10px;top:5px;"></span>
-    <span>HasOffers Support</span>
+    <a routerLink="/home" routerLinkActive="active" class="link">
+      <span>
+        <img src="../../assets/images/TUNE_VisualMark_White.png" height="30px" width="30px" style="position:relative;margin-right:10px;top:5px;">
+      </span>
+      <span>HasOffers Support</span>
+    </a>
     <span class="spacer"></span>
-    <a routerLink="/home" routerLinkActive="active" class="link"><mat-icon class="icon">home</mat-icon></a>
-    <a routerLink="/settings" routerLinkActive="active" class="link"><mat-icon class="icon">settings</mat-icon></a>
-    <a routerLink="/" routerLinkActive="active" class="link" (click)="logout()"><mat-icon class="icon"><i class="material-icons">transfer_within_a_station</i></mat-icon></a>
+    <a routerLink="/todos" routerLinkActive="active" class="link">
+      <mat-icon class="icon" matTooltip="Bugs & Ideas" style="transform: rotate(180deg);position:relative;bottom:1px;">wb_incandescent</mat-icon>
+    </a>
+    <a routerLink="/" routerLinkActive="active" class="link" (click)="logout()">
+      <mat-icon class="icon" matTooltip="Logout">
+        <i class="material-icons">transfer_within_a_station</i>
+      </mat-icon></a>
   </mat-toolbar-row>
 </mat-toolbar>

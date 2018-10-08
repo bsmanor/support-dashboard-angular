@@ -7,7 +7,7 @@ import { Callback } from './../models/callback';
 import { SchedulesService } from './../services/schedules.service';
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialog} from '@angular/material';
 import { DialogCallbacksHistoryComponent } from './../dialog-callbacks-history/dialog-callbacks-history.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 
@@ -19,9 +19,9 @@ import { trigger, transition, style, animate } from '@angular/animations';
     trigger('fade', [
       transition('void => *', [
         style({backgroundColor: 'yellow', opacity: 0}),
-        animate(2000)
+        animate(1000)
       ])
-    ])  
+    ])
   ]
 })
 export class CallbacksScheduleComponent implements OnInit {

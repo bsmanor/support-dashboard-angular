@@ -22,7 +22,7 @@ export class SettingsCallbacksComponent implements OnInit {
   ) {
     agentsService.getAgents().subscribe(agentsRef => {
       this.agents = agentsRef;
-    })
+    });
   }
 
   // saveCallback(username, networkId, date, time, assignee, ticketId) {

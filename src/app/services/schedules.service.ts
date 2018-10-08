@@ -5,7 +5,6 @@ import { Element } from './../chat-schedule/chat-schedule.component';
 import { ChatSchedule } from './../models/chat-schedule';
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from 'angularfire2/firestore';
-import { AngularFireAuth } from 'angularfire2/auth';
 import 'rxjs/add/operator/map';
 import {Observable} from 'rxjs/observable';
 import * as firebase from 'firebase';
@@ -51,7 +50,7 @@ export class SchedulesService {
     this.chatsRef = afs.collection<ChatSchedule>('chats');
     this.chats = this.chatsRef.valueChanges();
 
-    this.callbacksRef = afs.collection<Callback>('callbacks', ref => ref.orderBy('dateTimeUnixTimestamp'));
+    this.callbacksRef = afs.collection<Callback>('callbacks', ref => ref.orderBy('dateTimeUnixTimestamp', 'desc'));
     this.callbacks = this.callbacksRef.valueChanges();
 
     this.futureCallbacksRef = afs.collection<Callback>('callbacks',

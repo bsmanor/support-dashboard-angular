@@ -12,6 +12,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 
 // services
+import { TodosService } from './services/todos.service';
 import { ChatStatsService } from './services/chat-stats.service';
 import { SchedulesService } from './services/schedules.service';
 import { AgentsService } from './services/agents.service';
@@ -39,6 +40,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatExpansionModule} from '@angular/material/expansion';
+
 // Importing components
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -50,6 +53,7 @@ import { ChatStatsComponent } from './chat-stats/chat-stats.component';
 import { SchedulesComponent } from './schedules/schedules.component';
 import { AgentsSettingsComponent } from './settings-agents/agents-settings.component';
 import { ChatsTotalComponent } from './chats-total/chats-total.component';
+import { TodosComponent } from './todos/todos.component';
 import { ChatsSatisfactionComponent } from './chats-satisfaction/chats-satisfaction.component';
 import { ChatsOnlineComponent } from './chats-online/chats-online.component';
 import { ChatsQueuedComponent } from './chats-queued/chats-queued.component';
@@ -60,6 +64,7 @@ import { SettingsChatComponent } from './settings-chat/settings-chat.component';
 import { SettingsCallbacksComponent } from './settings-callbacks/settings-callbacks.component';
 import { DialogChatMessageComponent } from './dialog-chat-message/dialog-chat-message.component';
 import { DialogCallbacksHistoryComponent } from './dialog-callbacks-history/dialog-callbacks-history.component';
+import { DialogTodoItemComponent } from './dialog-todo-item/dialog-todo-item.component';
 import { ChatScheduleWeeklyComponent } from './chat-schedule-weekly/chat-schedule-weekly.component';
 import { SnackbarComponent } from './snackbar/snackbar.component';
 // Importing pipes
@@ -70,6 +75,7 @@ import { ZendeskStatsComponent } from './zendesk-stats/zendesk-stats.component';
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'settings', component: SettingsComponent },
+  { path: 'todos', component: TodosComponent },
   { path: 'settings/agents', component: AgentsSettingsComponent },
   { path: 'settings/chat', component: SettingsChatComponent },
   { path: 'settings/callbacks', component: SettingsCallbacksComponent },
@@ -98,12 +104,14 @@ const appRoutes: Routes = [
     CallbacksScheduleComponent,
     SettingsChatComponent,
     SettingsCallbacksComponent,
-    DialogCallbacksHistoryComponent,
     ChatScheduleWeeklyComponent,
-    DialogChatMessageComponent,
     LimitTextPipe,
     SnackbarComponent,
-    ZendeskStatsComponent
+    ZendeskStatsComponent,
+    TodosComponent,
+    DialogCallbacksHistoryComponent,
+    DialogChatMessageComponent,
+    DialogTodoItemComponent
   ],
   imports: [
     BrowserModule,
@@ -119,14 +127,14 @@ const appRoutes: Routes = [
     MatDialogModule,
     MatButtonModule, MatCheckboxModule, MatMenuModule, MatToolbarModule, MatChipsModule, MatDividerModule,
     MatSidenavModule, MatCardModule, MatIconModule, MatFormFieldModule, MatInputModule, MatTabsModule,
-    MatListModule, MatTableModule, MatSelectModule, MatProgressSpinnerModule, MatTooltipModule, MatSnackBarModule,
+    MatListModule, MatTableModule, MatSelectModule, MatProgressSpinnerModule, MatTooltipModule, MatSnackBarModule, MatExpansionModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence(), AngularFireDatabaseModule
   ],
-  providers: [AgentsService, SchedulesService, AngularFireAuth, MessagesService, ChatStatsService,
+  providers: [AgentsService, SchedulesService, AngularFireAuth, MessagesService, ChatStatsService, TodosService,
     WebhooksListenersService
   ],
-  entryComponents: [SnackbarComponent],
+  entryComponents: [SnackbarComponent, DialogTodoItemComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

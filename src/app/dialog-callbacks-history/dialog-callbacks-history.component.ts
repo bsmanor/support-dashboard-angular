@@ -3,7 +3,7 @@ import { Callback } from './../models/callback';
 import { SchedulesService } from './../services/schedules.service';
 import { Component, OnInit, Inject } from '@angular/core';
 import * as moment from 'moment';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 @Component({
   selector: 'app-dialog-callbacks-history',
@@ -13,6 +13,8 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 export class DialogCallbacksHistoryComponent implements OnInit {
 
   callbacks: any[];
+  isEditMode = false;
+  selectedCallback: Callback;
 
   constructor(
     private schedulesService: SchedulesService,
@@ -21,8 +23,18 @@ export class DialogCallbacksHistoryComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
+
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  enterEditMode(callback: Callback) {
+    this.selectedCallback = callback;
+    this.isEditMode = true;
+  }
+
+  updateCallback(id, property, value) {
+    this.schedulesService.updateCallback(id, property, value);
   }
 
   ngOnInit() {
