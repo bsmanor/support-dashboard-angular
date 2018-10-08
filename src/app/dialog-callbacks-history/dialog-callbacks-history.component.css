@@ -6,3 +6,7 @@
 .callbackListItem:hover {
   background-color: wheat;
 }
+
+.backIcon:hover {
+  font-weight: bold;
+}

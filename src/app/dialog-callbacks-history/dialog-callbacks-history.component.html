@@ -1,4 +1,4 @@
-<div *ngIf="!isEditMode" [@bounceOutUp]="bounceOutUp">
+<div *ngIf="!isEditMode" [@bounceOutUp]="bounceOutUp" [@bounceInUp]="bounceInUp">
   <div style="position:sticky; top:0px; display: block; z-index:10; background-color: whitesmoke; padding: 20px; opacity: 0.9">
     <form>
       <mat-form-field>
@@ -36,65 +36,75 @@
 </div>
 
 <!-- Shown when Edit Mode is True -->
-<div *ngIf="isEditMode" [@bounceOutUp]="bounceOutUp" style="padding:15px;" fxLayout="column" fxLayoutGap="20px">
-
+<div *ngIf="isEditMode" [@bounceOutUp]="bounceOutUp" [@bounceInUp]="bounceInUp" style="padding:15px;" fxLayout="column" fxLayoutGap="20px">
   <div>
-    <mat-icon (click)="exitEditMode()">arrow_back</mat-icon>
+    <mat-icon class="backIcon" (click)="exitEditMode()" style="cursor: pointer; transform: scale(1.2, 1.2)">arrow_back</mat-icon>
+    <h2 mat-dialog-title style="text-align:center">Edit Callback {{selectedCallback.ticketId}}</h2>
   </div>
 
-  <div fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">      
-    <p>
-      <mat-form-field appearance="outline">
-        <input name="username" matInput placeholder="" [(ngModel)]="selectedCallback.username">
-        <mat-hint>Username</mat-hint>
-      </mat-form-field>
-    </p>
 
-    <p>
-      <mat-form-field appearance="outline">
-        <input name="networkId" matInput placeholder="" [(ngModel)]="selectedCallback.networkId">
-        <mat-hint>Network ID</mat-hint>
-      </mat-form-field>
-    </p>
-
-    <p>
-      <mat-form-field appearance="outline">
-        <input name="date" matInput placeholder="" [(ngModel)]="selectedCallback.dateTime">
-        <mat-hint>Date</mat-hint>
-      </mat-form-field>
-    </p>
-
-    <p>
-      <mat-form-field appearance="outline">
-        <input name="assignee" matInput placeholder="" [(ngModel)]="selectedCallback.assignee">
-        <mat-hint>Assignee</mat-hint>
-      </mat-form-field>
-    </p>
-
-    <p>
-      <mat-form-field appearance="outline">
-        <input name="ticketId" matInput placeholder="" [(ngModel)]="selectedCallback.ticketId">
-        <mat-hint>Ticket ID</mat-hint>
-      </mat-form-field>
-    </p>
-
-    <p>
-      <mat-form-field appearance="outline">
-        <input name="zendeskLink" matInput placeholder="" [(ngModel)]="selectedCallback.zendeskLink">
-        <mat-hint>Zendesk Link</mat-hint>
-      </mat-form-field>
-    </p>
-
-    <p>
-      <mat-form-field appearance="outline">
-        <input name="status" matInput placeholder="" [(ngModel)]="selectedCallback.status">
-        <mat-hint>Status</mat-hint>
-      </mat-form-field>
-    </p>
+  <mat-dialog-content>
+    <div fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">      
+      <p>
+        <mat-form-field appearance="outline">
+          <input name="username" matInput [(ngModel)]="selectedCallback.username">
+          <mat-hint>Username</mat-hint>
+        </mat-form-field>
+      </p>
   
-  </div>
-
-  <div style="width:100%">
-    <button mat-raised-button (click)="updateCallback()" color="primary" style="width:100%;">SAVE</button>
-  </div>
+      <p>
+        <mat-form-field appearance="outline">
+          <input name="networkId" matInput [(ngModel)]="selectedCallback.networkId">
+          <mat-hint>Network ID</mat-hint>
+        </mat-form-field>
+      </p>
+  
+      <p>
+        <mat-form-field appearance="outline">
+          <input name="date" matInput [(ngModel)]="selectedCallback.dateTime">
+          <mat-hint>Date</mat-hint>
+        </mat-form-field>
+      </p>
+  
+      <p>
+        <mat-form-field appearance="outline">
+          <input name="assignee" matInput [(ngModel)]="selectedCallback.assignee">
+          <mat-hint>Assignee</mat-hint>
+        </mat-form-field>
+      </p>
+  
+      <p>
+        <mat-form-field appearance="outline">
+          <input name="ticketId" matInput [(ngModel)]="selectedCallback.ticketId">
+          <mat-hint>Ticket ID</mat-hint>
+        </mat-form-field>
+      </p>
+  
+      <p>
+        <mat-form-field appearance="outline">
+          <input name="zendeskLink" matInput [(ngModel)]="selectedCallback.zendeskLink">
+          <mat-hint>Zendesk Link</mat-hint>
+        </mat-form-field>
+      </p>
+  
+      <p>
+        <mat-form-field appearance="outline">
+          <input name="status" matInput [(ngModel)]="selectedCallback.status">
+          <mat-hint>Status</mat-hint>
+        </mat-form-field>
+      </p>
+  
+      <div *ngIf="selectedCallback.agent">
+        <button mat-button [matMenuTriggerFor]="agentsMenu">SELECT AGENT</button>
+        <mat-menu #agentsMenu="matMenu">
+            <button mat-menu-item *ngFor="let agent of data.agents">{{agent.name}}</button>
+          </mat-menu>
+    
+      </div>
+  
+      <div style="width:100%">
+        <button mat-raised-button (click)="updateCallback()" color="primary" style="width:100%;">SAVE</button>
+      </div>
+    </div>
+  </mat-dialog-content>
 </div>
